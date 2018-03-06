@@ -1,0 +1,26 @@
+#ifndef NAVWIDGET_H
+#define NAVWIDGET_H
+
+#include <QWidget>
+#include <QListWidget>
+#include <QPushButton>
+#include <QLabel>
+
+class NavWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit NavWidget(QWidget *parent = nullptr);    
+    QPushButton *pushButton_albumPic;
+    QLabel *label_songname;
+
+private:
+
+signals:    
+
+public slots:
+
+};
+
+#endif // NAVWIDGET_H
