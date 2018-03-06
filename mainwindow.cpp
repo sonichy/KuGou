@@ -401,7 +401,9 @@ void MainWindow::search()
             tableWidget_songlist->setItem(i,1,new QTableWidgetItem(songs[i].toObject().value("singername").toString()));
             tableWidget_songlist->setItem(i,2,new QTableWidgetItem(songs[i].toObject().value("album_name").toString()));
             int ds = songs[i].toObject().value("duration").toInt();
-            tableWidget_songlist->setItem(i,3,new QTableWidgetItem(QString("%1:%2").arg(ds/60,2,10,QLatin1Char(' ')).arg(ds%60,2,10,QLatin1Char('0'))));
+            QTableWidgetItem *TWI = new QTableWidgetItem(QString("%1:%2").arg(ds/60,2,10,QLatin1Char(' ')).arg(ds%60,2,10,QLatin1Char('0')));
+            TWI->setTextAlignment(Qt::AlignRight|Qt::AlignVCenter);
+            tableWidget_songlist->setItem(i,3,TWI);
             tableWidget_songlist->setItem(i,4,new QTableWidgetItem(songs[i].toObject().value("hash").toString()));
             QString mvhash = songs[i].toObject().value("mvhash").toString();
             tableWidget_songlist->setItem(i,5,new QTableWidgetItem(mvhash));
@@ -415,7 +417,6 @@ void MainWindow::search()
                 connect(pushButton_MV, SIGNAL(clicked()), this, SLOT(pushButtonMVClicked()));
                 tableWidget_songlist->setCellWidget(i,6,pushButton_MV);
             }
-
         }
         tableWidget_songlist->resizeColumnsToContents();
     }
