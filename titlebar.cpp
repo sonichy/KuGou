@@ -181,7 +181,7 @@ void TitleBar::about()
     dialog->setFixedSize(500,350);
     QVBoxLayout *vbox = new QVBoxLayout;
     QLabel *label = new QLabel;
-    label->setPixmap(QPixmap(":/icon.svg").scaled(80,80,Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation));
+    label->setPixmap(QPixmap(":/icon.svg").scaled(90,90,Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation));
     label->setAlignment(Qt::AlignCenter);
     vbox->addWidget(label);
     label = new QLabel;

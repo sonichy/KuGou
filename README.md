@@ -3,6 +3,8 @@
 已完成功能：搜索播放歌曲、MV，歌词。  
 软件界面和音乐版权归酷狗所有。  
 
+![alt](RankChinese.png)  
+
 ![alt](preview.png)  
 
 ![alt](kugoumv.png)  

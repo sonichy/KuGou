@@ -26,13 +26,12 @@ private:
     NavWidget *navWidget;    
     QWidget *toplistWidget;
     QTabWidget *tabWidget;
-    QTableWidget *tableWidget_songlist;
+    QTableWidget *tableWidget_songlist, *tableWidget_songlistrank;
     QTextBrowser *textBrowser;
     ControlBar *controlBar;
     QMediaPlayer *player;
     LyricWidget *lyricWidget;    
-    int volume;
-    void createWidgetToplist();
+    int volume, tabIndex;
     QByteArray getReply(QString surl);
     QByteArray postReply(QString surl,QString spost);
     void setLyric(QString s);
@@ -47,11 +46,11 @@ private:
     void writeSettings(QString path, QString group, QString key, QString value);
     QPushButton *pushButton_fontcolor;
     QVideoWidget *videoWidget;
+    void rankChineseNew();
 
 private slots:
     void showNormalMaximize();
     void moveMe(QPoint point);
-    void createPlaylist(long);
     void playSong(int,int);
     void durationChange(qint64 d);
     void positionChange(qint64 p);
@@ -75,7 +74,12 @@ private slots:
     void playLast();
     void playNext();
     void pushButtonMVClicked();
+    void rankPushButtonMVClicked();
     void showHidePlayList(bool b);
+    void rankListItemClick(QListWidgetItem *item);
+    void playSongRank(int row, int column);
+    void enterFullscreen();
+    void exitFullscreen();
 };
 
 #endif // MAINWINDOW_H

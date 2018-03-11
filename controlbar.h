@@ -14,7 +14,7 @@ class ControlBar : public QWidget
 public:
     explicit ControlBar(QWidget *parent = nullptr);
     QSlider *slider_progress, *slider_volume;
-    QPushButton *pushButton_last, *pushButton_play, *pushButton_next, *pushButton_quality, *pushButton_songname, *pushButton_mute, *pushButton_lyric, *pushButton_playlist;
+    QPushButton *pushButton_last, *pushButton_play, *pushButton_next, *pushButton_quality, *pushButton_songname, *pushButton_mute, *pushButton_lyric, *pushButton_playlist, *pushButton_fullscreen;
     QComboBox *comboBox;
     QLabel *label_song_timeNow, *label_song_duration;
 

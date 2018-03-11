@@ -33,7 +33,6 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_play->setIconSize(QSize(42,42));
     pushButton_play->setFocusPolicy(Qt::NoFocus);
     pushButton_play->setFlat(true);
-    //connect(pushButton_play,SIGNAL(pressed()),this,SLOT(emitPlayPause()));
     hbox->addWidget(pushButton_play);
 
     pushButton_next = new QPushButton;
@@ -129,6 +128,14 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_playlist->setCheckable(true);
     pushButton_playlist->setChecked(true);
     hbox->addWidget(pushButton_playlist);
+
+    pushButton_fullscreen = new QPushButton;
+    pushButton_fullscreen->setFixedSize(30,30);
+    pushButton_fullscreen->setIcon(QIcon(":/fullscreen.svg"));
+    pushButton_fullscreen->setIconSize(QSize(25,25));
+    pushButton_fullscreen->setFocusPolicy(Qt::NoFocus);
+    pushButton_fullscreen->setFlat(true);
+    hbox->addWidget(pushButton_fullscreen);
 
     setLayout(hbox);
 }

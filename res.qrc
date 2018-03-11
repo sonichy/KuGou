@@ -9,15 +9,8 @@
         <file>last.svg</file>
         <file>volume.svg</file>
         <file>menu.svg</file>
-        <file>music.svg</file>
-        <file>friend.svg</file>
         <file>video.svg</file>
-        <file>radio.svg</file>
-        <file>cloud.svg</file>
         <file>download.svg</file>
-        <file>music1.svg</file>
-        <file>radio1.svg</file>
-        <file>man.svg</file>
         <file>heart.svg</file>
         <file>songlist.svg</file>
         <file>playlist.svg</file>
@@ -29,7 +22,21 @@
         <file>lastpage.svg</file>
         <file>nextpage.svg</file>
         <file>normal.svg</file>
-        <file>rank.svg</file>
         <file>set.svg</file>
+        <file>KU.svg</file>
+        <file>DJ.svg</file>
+        <file>N.svg</file>
+        <file>fire.svg</file>
+        <file>euro.svg</file>
+        <file>SouthKorea.svg</file>
+        <file>华.svg</file>
+        <file>乐人.png</file>
+        <file>hand.png</file>
+        <file>5sing.png</file>
+        <file>fanxing.png</file>
+        <file>sakura.svg</file>
+        <file>歌.svg</file>
+        <file>粤.svg</file>
+        <file>fullscreen.svg</file>
     </qresource>
 </RCC>

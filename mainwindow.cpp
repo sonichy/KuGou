@@ -23,7 +23,7 @@
 #include <QFileDialog>
 #include <QSettings>
 #include <QPushButton>
-#include <QButtonGroup>
+#include <QShortcut>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,9 +32,11 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowFlags(Qt::FramelessWindowHint);
     resize(1000,700);
     move((QApplication::desktop()->width()-width())/2,(QApplication::desktop()->height()-height())/2);
-    setStyleSheet("QTabWidget::tab-bar { alignment:center; }"
-                  "QTabBar:tab { width:60px; height:40px; font-size:15px; }"
+    setStyleSheet("QTabWidget::pane { border:0; }"
+                  "QTabWidget::tab-bar { alignment:center; }"
+                  "QTabBar:tab { width:90px; height:40px; font-size:15px; }"
                   "QTabBar::tab:selected { color:rgb(0,131,221); border-bottom:1px solid rgb(0,131,221); }");
+    connect(new QShortcut(QKeySequence(Qt::Key_Escape),this), SIGNAL(activated()),this, SLOT(exitFullscreen()));
 
     QWidget *widget = new QWidget;
     setCentralWidget(widget);
@@ -54,14 +56,73 @@ MainWindow::MainWindow(QWidget *parent)
     connect(titleBar,SIGNAL(moveMainWindow(QPoint)),this,SLOT(moveMe(QPoint)));
     vbox->addWidget(titleBar);
 
-    //createWidgetToplist();
     QHBoxLayout *hbox = new QHBoxLayout;
     navWidget = new NavWidget;
     connect(navWidget->pushButton_albumPic,SIGNAL(clicked(bool)),this,SLOT(swapLyric()));
     hbox->addWidget(navWidget);
 
     tabWidget = new QTabWidget;
-    tabWidget->addTab(new QLabel(""),"乐库");
+    QTabWidget *repertory = new QTabWidget;
+    repertory->addTab(new QLabel(""),"推荐");
+
+    QWidget *widget_rank = new QWidget;
+    QHBoxLayout *hbox_rank = new QHBoxLayout;
+    hbox_rank->setSpacing(0);
+    QListWidget *rankList = new QListWidget;
+    rankList->setFixedWidth(140);
+    QListWidgetItem *LWI;
+    LWI = new QListWidgetItem(QIcon(":/KU.svg"), "酷音乐排行榜");
+    rankList->insertItem(0, LWI);
+    LWI = new QListWidgetItem(QIcon(":/N.svg"), "酷狗飙升榜");
+    rankList->insertItem(1, LWI);
+    LWI = new QListWidgetItem(QIcon(":/icon.svg"), "酷狗TOP500");
+    rankList->insertItem(2, LWI);
+    LWI = new QListWidgetItem(QIcon(":/fire.svg"), "网络红歌榜");
+    rankList->insertItem(3, LWI);
+    LWI = new QListWidgetItem(QIcon(":/DJ.svg"), "DJ热歌榜");
+    rankList->insertItem(4, LWI);
+    LWI = new QListWidgetItem(QIcon(":/华.svg"), "华语新歌榜");
+    rankList->insertItem(5, LWI);
+    LWI = new QListWidgetItem(QIcon(":/euro.svg"),"欧美新歌榜");
+    rankList->insertItem(6, LWI);
+    LWI = new QListWidgetItem(QIcon(":/SouthKorea.svg"), "韩国新歌榜");
+    rankList->insertItem(7, LWI);
+    LWI = new QListWidgetItem(QIcon(":/sakura.svg"), "日本新歌榜");
+    rankList->insertItem(8, LWI);
+    LWI = new QListWidgetItem(QIcon(":/歌.svg"), "歌手第二季榜");
+    rankList->insertItem(9, LWI);
+    LWI = new QListWidgetItem(QIcon(":/乐人.png"), "腾讯音乐人原创榜");
+    rankList->insertItem(10, LWI);
+    LWI = new QListWidgetItem(QIcon(":/粤.svg"), "粤语新歌榜");
+    rankList->insertItem(11, LWI);
+    LWI = new QListWidgetItem(QIcon(":/hand.png"), "酷狗分享榜");
+    rankList->insertItem(12, LWI);
+    LWI = new QListWidgetItem(QIcon(":/5sing.png"), "5sing音乐榜");
+    rankList->insertItem(13, LWI);
+    LWI = new QListWidgetItem(QIcon(":/fanxing.png"), "繁星音乐榜");
+    rankList->insertItem(14, LWI);
+    connect(rankList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(rankListItemClick(QListWidgetItem*)));
+    hbox_rank->addWidget(rankList);
+
+    tableWidget_songlistrank = new QTableWidget;
+    tableWidget_songlistrank->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    tableWidget_songlistrank->setSelectionMode(QAbstractItemView::SingleSelection);
+    tableWidget_songlistrank->setSelectionBehavior(QAbstractItemView::SelectRows);
+    tableWidget_songlistrank->setColumnCount(4);
+    QStringList headerRank;
+    headerRank << "歌曲名" << "hash" << "mvhash" << "操作";
+    tableWidget_songlistrank->setHorizontalHeaderLabels(headerRank);
+    tableWidget_songlistrank->setColumnHidden(1,true);
+    tableWidget_songlistrank->setColumnHidden(2,true);
+    connect(tableWidget_songlistrank,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(playSongRank(int,int)));
+    hbox_rank->addWidget(tableWidget_songlistrank);
+    widget_rank->setLayout(hbox_rank);
+    repertory->addTab(widget_rank,"排行榜");
+
+    repertory->addTab(new QLabel(""),"歌手");
+    repertory->addTab(new QLabel(""),"分类");
+    repertory->addTab(new QLabel(""),"歌手第二季");
+    tabWidget->addTab(repertory,"乐库");
     tabWidget->addTab(new QLabel(""),"电台");
 
     tableWidget_songlist = new QTableWidget;
@@ -100,6 +161,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(controlBar->pushButton_mute,SIGNAL(pressed()),this,SLOT(mute()));
     connect(controlBar->pushButton_lyric,SIGNAL(clicked(bool)),this,SLOT(showHideLyric(bool)));
     connect(controlBar->pushButton_playlist,SIGNAL(clicked(bool)),this,SLOT(showHidePlayList(bool)));
+    connect(controlBar->pushButton_fullscreen,SIGNAL(pressed()),this,SLOT(enterFullscreen()));
     connect(controlBar->slider_progress,SIGNAL(sliderReleased()),this,SLOT(setMPPosition()));
     connect(controlBar->slider_volume,SIGNAL(sliderReleased()),this,SLOT(setVolume()));    
     //connect(controlBar->comboBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(changeQuality(QString)));
@@ -135,6 +197,9 @@ MainWindow::MainWindow(QWidget *parent)
         lyricWidget->label_lyric->setFont(QFont(SLFont.at(0),SLFont.at(1).toInt(),SLFont.at(2).toInt(),SLFont.at(3).toInt()));
     }
     lyricWidget->show();
+
+    rankChineseNew();
+    rankList->setCurrentRow(5);
 }
 
 MainWindow::~MainWindow()
@@ -144,27 +209,6 @@ MainWindow::~MainWindow()
 void MainWindow::moveMe(QPoint point)
 {
     move(point);
-}
-
-void MainWindow::createWidgetToplist()
-{
-    toplistWidget = new QWidget;
-    QString surl = "http://music.163.com/api/toplist";
-    QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
-    qDebug() << surl;
-    QGridLayout *gridLayout = new QGridLayout(toplistWidget);
-    QJsonArray list = json.object().value("list").toArray();
-    //qDebug() << list;
-    for(int r=0; r< list.size()/5; r++){
-        for(int c=0; c<5; c++){
-            QString coverImgUrl = list[r*5+c].toObject().value("coverImgUrl").toString();
-            ToplistItem *toplistItem = new ToplistItem;
-            toplistItem->setImage(coverImgUrl);
-            toplistItem->id = list[r*5+c].toObject().value("id").toDouble();
-            connect(toplistItem,SIGNAL(send(long)),this,SLOT(createPlaylist(long)));
-            gridLayout->addWidget(toplistItem,r,c);
-        }
-    }
 }
 
 QByteArray MainWindow::getReply(QString surl)
@@ -208,34 +252,6 @@ void MainWindow::showNormalMaximize()
     }
 }
 
-void MainWindow::createPlaylist(long id)
-{
-    tableWidget_songlist->setRowCount(0);
-    qDebug() << id;
-    QString surl = QString("http://music.163.com/api/playlist/detail?id=%1").arg(id);
-    qDebug() << surl;
-    QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
-    QJsonArray tracks = json.object().value("result").toObject().value("tracks").toArray();
-    //qDebug() << tracks;
-    for(int i=0; i<tracks.size(); i++){
-        tableWidget_songlist->insertRow(i);
-        tableWidget_songlist->setItem(i,0,new QTableWidgetItem(tracks[i].toObject().value("name").toString()));
-        QJsonArray artists = tracks[i].toObject().value("artists").toArray();
-        QString sartists = "";
-        for(int a=0; a<artists.size(); a++){
-            sartists += artists[a].toObject().value("name").toString();
-            if(a<artists.size()-1) sartists += ",";
-        }
-        tableWidget_songlist->setItem(i,1,new QTableWidgetItem(sartists));
-        tableWidget_songlist->setItem(i,2,new QTableWidgetItem(tracks[i].toObject().value("album").toObject().value("name").toString()));
-        int ds = tracks[i].toObject().value("duration").toInt()/1000;
-        tableWidget_songlist->setItem(i,3,new QTableWidgetItem(QString("%1:%2").arg(ds/60,2,10,QLatin1Char(' ')).arg(ds%60,2,10,QLatin1Char('0'))));
-        tableWidget_songlist->setItem(i,4,new QTableWidgetItem(QString::number(tracks[i].toObject().value("id").toInt())));
-        tableWidget_songlist->setItem(i,5,new QTableWidgetItem(tracks[i].toObject().value("album").toObject().value("picUrl").toString()));
-    }
-    tableWidget_songlist->resizeColumnsToContents();
-}
-
 void MainWindow::playSong(int row, int column)
 {
     Q_UNUSED(column);
@@ -251,11 +267,43 @@ void MainWindow::playSong(int row, int column)
     controlBar->pushButton_songname->setText(songname);
     lyricWidget->label_lyric->setText(songname);
     setLyric(json.object().value("data").toObject().value("lyrics").toString());
-    QPixmap pixmap;
-    pixmap.loadFromData(getReply(json.object().value("data").toObject().value("img").toString()));
-    navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
-    pixmap.save(QDir::currentPath() + "/cover.jpg");
-    textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
+    QString imgurl = json.object().value("data").toObject().value("img").toString();
+    if(imgurl!=""){
+        QPixmap pixmap;
+        pixmap.loadFromData(getReply(imgurl));
+        navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
+        pixmap.save(QDir::currentPath() + "/cover.jpg");
+        textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
+    }else{
+
+    }
+}
+
+void MainWindow::playSongRank(int row, int column)
+{
+    Q_UNUSED(column);
+    QString hash = tableWidget_songlistrank->item(row,1)->text();
+    QString surl = "http://www.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
+    qDebug() << surl;
+    QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
+    QString songurl = json.object().value("data").toObject().value("play_url").toString();
+    player->setMedia(QUrl(songurl));
+    player->play();
+    QString songname = tableWidget_songlistrank->item(row,0)->text();
+    navWidget->label_songname->setText(songname);
+    controlBar->pushButton_songname->setText(songname);
+    lyricWidget->label_lyric->setText(songname);
+    setLyric(json.object().value("data").toObject().value("lyrics").toString());
+    QString imgurl = json.object().value("data").toObject().value("img").toString();
+    if(imgurl!=""){
+        QPixmap pixmap;
+        pixmap.loadFromData(getReply(imgurl));
+        navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
+        pixmap.save(QDir::currentPath() + "/cover.jpg");
+        textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
+    }else{
+
+    }
 }
 
 void MainWindow::durationChange(qint64 d)
@@ -469,11 +517,12 @@ void MainWindow::setLyric(QString s)
 }
 
 void MainWindow::swapLyric()
-{    
-    if(tabWidget->currentIndex()==2){
+{
+    if(tabWidget->currentIndex()!=6){
+        tabIndex=tabWidget->currentIndex();
         tabWidget->setCurrentIndex(6);
     }else{
-        tabWidget->setCurrentIndex(2);
+        tabWidget->setCurrentIndex(tabIndex);
     }
 }
 
@@ -598,27 +647,54 @@ void MainWindow::writeSettings(QString path, QString group, QString key, QString
 
 void MainWindow::playLast()
 {
-    int row = tableWidget_songlist->currentRow();
-    qDebug() << row;
-    if (row != -1) {
-        if (row > 0) {
-            row--;
-            playSong(row,0);
-            tableWidget_songlist->setCurrentCell(row,0);
+    if(tabWidget->currentIndex()==0){
+        int row = tableWidget_songlistrank->currentRow();
+        qDebug() << row;
+        if (row != -1) {
+            if (row > 0) {
+                row--;
+                playSongRank(row,0);
+                tableWidget_songlistrank->setCurrentCell(row,0);
+            }
+        }
+    }
+    if(tabWidget->currentIndex()==2){
+        int row = tableWidget_songlist->currentRow();
+        qDebug() << row;
+        if (row != -1) {
+            if (row > 0) {
+                row--;
+                playSong(row,0);
+                tableWidget_songlist->setCurrentCell(row,0);
+            }
         }
     }
 }
 
 void MainWindow::playNext()
 {
-    int row = tableWidget_songlist->currentRow();
-    int rc = tableWidget_songlist->rowCount();
-    qDebug() << row << rc;
-    if (row != -1) {
-        if (row < rc-1) {
-            row++;
-            playSong(row,0);
-            tableWidget_songlist->setCurrentCell(row,0);
+    if(tabWidget->currentIndex()==0){
+        int row = tableWidget_songlistrank->currentRow();
+        int rc = tableWidget_songlistrank->rowCount();
+        qDebug() << row << rc;
+        if (row != -1) {
+            if (row < rc-1) {
+                row++;
+                playSongRank(row,0);
+                tableWidget_songlistrank->setCurrentCell(row,0);
+            }
+        }
+    }
+    if(tabWidget->currentIndex()==2){
+        int row = tableWidget_songlist->currentRow();
+        int rc = tableWidget_songlist->rowCount();
+        qDebug() << row << rc;
+        if (row != -1) {
+            if (row < rc-1) {
+                row++;
+                playSong(row,0);
+                tableWidget_songlist->setCurrentCell(row,0);
+            }
         }
     }
 }
@@ -637,7 +713,7 @@ void MainWindow::pushButtonMVClicked()
     QString mvhash = tableWidget_songlist->item(row,5)->text();
     QString surl = "http://m.kugou.com/app/i/mv.php?cmd=100&ismp3=1&ext=mp4&hash=" + mvhash;
     qDebug() << surl;
-    QJsonDocument json = QJsonDocument::fromJson(getReply(surl));    
+    QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
     QString mvurl = json.object().value("mvdata").toObject().value("rq").toObject().value("downurl").toString();
     if(mvurl==""){
         mvurl = json.object().value("mvdata").toObject().value("sq").toObject().value("downurl").toString();
@@ -647,6 +723,41 @@ void MainWindow::pushButtonMVClicked()
     }
     qDebug() << mvurl;
     lyricWidget->hide();
+    navWidget->hide();
+    controlBar->pushButton_lyric->setChecked(false);
+    controlBar->pushButton_playlist->setChecked(false);
+    tabWidget->setCurrentWidget(videoWidget);
+    player->setMedia(QUrl(mvurl));
+    player->play();
+}
+
+void MainWindow::rankPushButtonMVClicked()
+{
+    QPushButton *senderObj = qobject_cast<QPushButton*>(sender());
+    if (senderObj == nullptr) {
+        return;
+    }
+    QModelIndex index = tableWidget_songlistrank->indexAt(QPoint(senderObj->frameGeometry().x(),senderObj->frameGeometry().y()));
+    int row = index.row();
+    QString songname = tableWidget_songlistrank->item(row,0)->text();
+    navWidget->label_songname->setText(songname);
+    controlBar->pushButton_songname->setText(songname);
+    QString mvhash = tableWidget_songlistrank->item(row,2)->text();
+    QString surl = "http://m.kugou.com/app/i/mv.php?cmd=100&ismp3=1&ext=mp4&hash=" + mvhash;
+    qDebug() << surl;
+    QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
+    QString mvurl = json.object().value("mvdata").toObject().value("rq").toObject().value("downurl").toString();
+    if(mvurl==""){
+        mvurl = json.object().value("mvdata").toObject().value("sq").toObject().value("downurl").toString();
+    }
+    if(mvurl==""){
+        mvurl = json.object().value("mvdata").toObject().value("le").toObject().value("downurl").toString();
+    }
+    qDebug() << mvurl;
+    lyricWidget->hide();
+    navWidget->hide();
+    controlBar->pushButton_lyric->setChecked(false);
+    controlBar->pushButton_playlist->setChecked(false);
     tabWidget->setCurrentWidget(videoWidget);
     player->setMedia(QUrl(mvurl));
     player->play();
@@ -655,4 +766,60 @@ void MainWindow::pushButtonMVClicked()
 void MainWindow::showHidePlayList(bool b)
 {
     navWidget->setVisible(b);
+}
+
+void MainWindow::rankListItemClick(QListWidgetItem *item)
+{
+    Q_UNUSED(item);
+}
+
+void MainWindow::rankChineseNew()
+{
+    tableWidget_songlistrank->setRowCount(0);
+    QString surl = "http://m.kugou.com/?json=true";
+    qDebug() << surl;
+    QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
+    QJsonArray songs = json.object().value("data").toArray();
+    for(int i=0; i<songs.size(); i++){
+        tableWidget_songlistrank->insertRow(i);
+        tableWidget_songlistrank->setItem(i,0,new QTableWidgetItem(songs[i].toObject().value("filename").toString()));
+        tableWidget_songlistrank->setItem(i,1,new QTableWidgetItem(songs[i].toObject().value("hash").toString()));
+        QString mvhash = songs[i].toObject().value("mvhash").toString();
+        tableWidget_songlistrank->setItem(i,2,new QTableWidgetItem(mvhash));
+        if(mvhash!=""){
+            QPushButton *pushButton_MV = new QPushButton;
+            pushButton_MV->setFixedSize(24,24);
+            pushButton_MV->setIcon(QIcon(":/video.svg"));
+            pushButton_MV->setIconSize(QSize(24,24));
+            pushButton_MV->setFocusPolicy(Qt::NoFocus);
+            pushButton_MV->setFlat(true);
+            connect(pushButton_MV, SIGNAL(clicked()), this, SLOT(rankPushButtonMVClicked()));
+            tableWidget_songlistrank->setCellWidget(i,3,pushButton_MV);
+        }
+    }
+    tableWidget_songlistrank->resizeColumnsToContents();
+}
+
+void MainWindow::enterFullscreen()
+{
+    if(tabWidget->currentIndex()==3){
+        showFullScreen();
+        titleBar->hide();
+        controlBar->hide();
+        tabWidget->tabBar()->hide();
+        navWidget->hide();
+        lyricWidget->hide();
+    }
+}
+
+void MainWindow::exitFullscreen()
+{
+    if(isFullScreen()){
+        showNormal();
+        titleBar->show();
+        controlBar->show();
+        tabWidget->tabBar()->show();
+        if(controlBar->pushButton_playlist->isChecked())navWidget->show();
+        if(controlBar->pushButton_lyric->isChecked())lyricWidget->show();
+    }
 }
