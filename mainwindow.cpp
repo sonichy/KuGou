@@ -707,6 +707,7 @@ void MainWindow::pushButtonMVClicked()
     }
     QModelIndex index = tableWidget_songlist->indexAt(QPoint(senderObj->frameGeometry().x(),senderObj->frameGeometry().y()));
     int row = index.row();
+    tableWidget_songlist->setCurrentCell(row,0);
     QString songname = tableWidget_songlist->item(row,0)->text() + " - " + tableWidget_songlist->item(row,1)->text();
     navWidget->label_songname->setText(songname + "\n" + tableWidget_songlist->item(row,3)->text());
     controlBar->pushButton_songname->setText(songname);
@@ -739,6 +740,7 @@ void MainWindow::rankPushButtonMVClicked()
     }
     QModelIndex index = tableWidget_songlistrank->indexAt(QPoint(senderObj->frameGeometry().x(),senderObj->frameGeometry().y()));
     int row = index.row();
+    tableWidget_songlistrank->setCurrentCell(row,0);
     QString songname = tableWidget_songlistrank->item(row,0)->text();
     navWidget->label_songname->setText(songname);
     controlBar->pushButton_songname->setText(songname);
