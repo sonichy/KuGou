@@ -25,7 +25,7 @@ private:
     TitleBar *titleBar;
     NavWidget *navWidget;    
     QWidget *toplistWidget;
-    QTabWidget *tabWidget;
+    QTabWidget *tabWidget, *repertory;
     QTableWidget *tableWidget_songlist, *tableWidget_songlistrank;
     QTextBrowser *textBrowser;
     ControlBar *controlBar;

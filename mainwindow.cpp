@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     setStyleSheet("QTabWidget::pane { border:0; }"
                   "QTabWidget::tab-bar { alignment:center; }"
                   "QTabBar:tab { width:90px; height:40px; font-size:15px; }"
-                  "QTabBar::tab:selected { color:rgb(0,131,221); border-bottom:1px solid rgb(0,131,221); }");
+                  "QTabBar::tab:selected { color:rgb(0,131,221); border-bottom:1px solid rgb(0,131,221);}");
     connect(new QShortcut(QKeySequence(Qt::Key_Escape),this), SIGNAL(activated()),this, SLOT(exitFullscreen()));
 
     QWidget *widget = new QWidget;
@@ -62,7 +62,9 @@ MainWindow::MainWindow(QWidget *parent)
     hbox->addWidget(navWidget);
 
     tabWidget = new QTabWidget;
-    QTabWidget *repertory = new QTabWidget;
+    tabWidget->setObjectName("tabWidget");
+    repertory = new QTabWidget;
+    repertory->setObjectName("repertory");
     repertory->addTab(new QLabel(""),"推荐");
 
     QWidget *widget_rank = new QWidget;
@@ -800,6 +802,7 @@ void MainWindow::rankChineseNew()
         }
     }
     tableWidget_songlistrank->resizeColumnsToContents();
+    repertory->setCurrentIndex(1);
 }
 
 void MainWindow::enterFullscreen()
