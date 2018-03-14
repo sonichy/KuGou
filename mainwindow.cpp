@@ -807,7 +807,7 @@ void MainWindow::rankChineseNew()
 
 void MainWindow::enterFullscreen()
 {
-    if(tabWidget->currentIndex()==3){
+    if(tabWidget->currentIndex()==3 || tabWidget->currentIndex()==6){
         showFullScreen();
         titleBar->hide();
         controlBar->hide();
