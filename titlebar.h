@@ -20,9 +20,11 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
 private:
+    bool MLBD;
     QPoint relativePos;
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
 
 signals:

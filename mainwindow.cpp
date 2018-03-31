@@ -434,9 +434,9 @@ void MainWindow::preSearch()
 
 void MainWindow::search()
 {
-    if(titleBar->lineEdit_search->text()!=""){
+    if(titleBar->lineEdit_search->text() != ""){
         tabWidget->setCurrentWidget(tableWidget_songlist);
-        int pagesize=20;
+        int pagesize = 20;
         QString surl = "http://mobilecdn.kugou.com/api/v3/search/song?format=json&keyword=" + titleBar->lineEdit_search->text() + "&page=" + QString::number(titleBar->lineEdit_page->text().toInt()) + "&pagesize=" + QString::number(pagesize) + "&showtype=1";
         qDebug() << surl;
         //qDebug() << postReply(surl,spost);
@@ -457,7 +457,7 @@ void MainWindow::search()
             tableWidget_songlist->setItem(i,4,new QTableWidgetItem(songs[i].toObject().value("hash").toString()));
             QString mvhash = songs[i].toObject().value("mvhash").toString();
             tableWidget_songlist->setItem(i,5,new QTableWidgetItem(mvhash));
-            if(mvhash!=""){
+            if(mvhash != ""){
                 QPushButton *pushButton_MV = new QPushButton;
                 pushButton_MV->setFixedSize(24,24);
                 pushButton_MV->setIcon(QIcon(":/video.svg"));
@@ -521,7 +521,7 @@ void MainWindow::setLyric(QString s)
 void MainWindow::swapLyric()
 {
     if(tabWidget->currentIndex()!=6){
-        tabIndex=tabWidget->currentIndex();
+        tabIndex = tabWidget->currentIndex();
         tabWidget->setCurrentIndex(6);
     }else{
         tabWidget->setCurrentIndex(tabIndex);

@@ -106,6 +106,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_menu->setIconSize(QSize(20,20));
     pushButton_menu->setFlat(true);
     pushButton_menu->setFocusPolicy(Qt::NoFocus);
+    pushButton_menu->setCursor(Qt::PointingHandCursor);
     QMenu *submenu = new QMenu(this);
     QAction *login = new QAction("登录",this);
     QAction *about = new QAction("关于",this);
@@ -125,8 +126,10 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_minimize->setIconSize(QSize(20,20));
     pushButton_minimize->setFlat(true);
     pushButton_minimize->setFocusPolicy(Qt::NoFocus);
+    pushButton_minimize->setCursor(Qt::PointingHandCursor);
     pushButton_minimize->installEventFilter(this);
     hbox->addWidget(pushButton_minimize);
+    hbox->addSpacing(5);
 
     pushButton_maximize = new QPushButton;
     pushButton_maximize->setFixedSize(24,24);
@@ -134,8 +137,10 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_maximize->setIconSize(QSize(20,20));
     pushButton_maximize->setFlat(true);
     pushButton_maximize->setFocusPolicy(Qt::NoFocus);
+    pushButton_maximize->setCursor(Qt::PointingHandCursor);
     pushButton_maximize->installEventFilter(this);
     hbox->addWidget(pushButton_maximize);
+    hbox->addSpacing(5);
 
     pushButton_close = new QPushButton;
     pushButton_close->setFixedSize(24,24);
@@ -143,8 +148,9 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_close->setIconSize(QSize(20,20));
     pushButton_close->setFlat(true);
     pushButton_close->setFocusPolicy(Qt::NoFocus);
+    pushButton_close->setCursor(Qt::PointingHandCursor);
     pushButton_close->installEventFilter(this);
-    hbox->addWidget(pushButton_close);
+    hbox->addWidget(pushButton_close);    
 
     setLayout(hbox);
 }
@@ -152,6 +158,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 void TitleBar::mousePressEvent(QMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton){
+        MLBD = true;
         //qDebug() << "mousePress" << event->pos();
         relativePos = event->pos();
     }
@@ -159,7 +166,17 @@ void TitleBar::mousePressEvent(QMouseEvent *event)
 
 void TitleBar::mouseMoveEvent(QMouseEvent *event)
 {
-    emit moveMainWindow(event->globalPos() - relativePos);
+    if (MLBD) {
+        setCursor(Qt::ClosedHandCursor);
+        emit moveMainWindow(event->globalPos() - relativePos);
+    }
+}
+
+void TitleBar::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    MLBD = false;
+    setCursor(Qt::ArrowCursor);
 }
 
 bool TitleBar::eventFilter(QObject *obj, QEvent *event)
