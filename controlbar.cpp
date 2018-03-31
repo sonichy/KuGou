@@ -129,6 +129,15 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_playlist->setChecked(true);
     hbox->addWidget(pushButton_playlist);
 
+    pushButton_download = new QPushButton;
+    pushButton_download->setFixedSize(30,30);
+    pushButton_download->setIcon(QIcon(":/download.svg"));
+    pushButton_download->setIconSize(QSize(25,25));
+    pushButton_download->setFocusPolicy(Qt::NoFocus);
+    pushButton_download->setFlat(true);
+    hbox->addWidget(pushButton_download);
+
+
     pushButton_fullscreen = new QPushButton;
     pushButton_fullscreen->setFixedSize(30,30);
     pushButton_fullscreen->setIcon(QIcon(":/fullscreen.svg"));
