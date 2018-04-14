@@ -12,6 +12,7 @@ NavWidget::NavWidget(QWidget *parent) : QWidget(parent)
     pushButton_albumPic->setIconSize(QSize(70,70));
     pushButton_albumPic->setFocusPolicy(Qt::NoFocus);
     pushButton_albumPic->setFlat(true);
+    pushButton_albumPic->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_albumPic);
     label_songname = new QLabel;
     label_songname->setStyleSheet("font-size:13px;");

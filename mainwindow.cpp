@@ -28,7 +28,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowIcon(QIcon(":/icon.svg"));
+    setWindowIcon(QIcon(":/icon.svg"));    
     setWindowFlags(Qt::FramelessWindowHint);
     resize(1000,700);
     move((QApplication::desktop()->width()-width())/2,(QApplication::desktop()->height()-height())/2);
@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->setContentsMargins(0,0,0,0);
 
     titleBar = new TitleBar;
-    connect(titleBar->pushButton_search,SIGNAL(clicked(bool)),this,SLOT(preSearch()));
+    connect(titleBar->action_search,SIGNAL(triggered(bool)),this,SLOT(preSearch()));
     connect(titleBar->lineEdit_search,SIGNAL(returnPressed()),this,SLOT(preSearch()));
     connect(titleBar->lineEdit_page,SIGNAL(returnPressed()),this,SLOT(search()));
     connect(titleBar->pushButton_lastPage,SIGNAL(clicked(bool)),this,SLOT(lastPage()));
@@ -896,17 +896,6 @@ void MainWindow::download(QString surl, QString filepath)
     QEventLoop loop;
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
-//    //跳转URL处理  https://blog.csdn.net/mingzznet/article/details/9724371
-//    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-//    qDebug() << "HttpStatusCode" << statusCode;
-//    surl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toString();
-//    qDebug() << "redirect" << surl;
-//    url.setUrl(surl);
-//    request.setUrl(url);
-//    reply = NAM->get(request);
-//    connect(reply,SIGNAL(downloadProgress(qint64,qint64)),this,SLOT(updateProgress(qint64,qint64)));
-//    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-//    loop.exec();
     QFile file(filepath);
     file.open(QIODevice::WriteOnly);
     file.write(reply->readAll());
