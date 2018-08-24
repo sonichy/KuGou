@@ -199,7 +199,7 @@ void TitleBar::about()
     label->setStyleSheet("font-size:20px;");
     vbox->addWidget(label);
     label = new QLabel;
-    label->setText("         一款基于 Qt 的酷狗音乐播放器。\n作者：黄颖\nE-mail: sonichy@163.com\n项目地址：http://sonichy.github.com\n界面和音乐版权：酷狗\n参考：\nhttps://github.com/ecitlm/Kugou-api\nhttps://www.cnblogs.com/xuhui24/p/6555761.html");
+    label->setText("         一款基于 Qt5 的酷狗音乐播放器。\n作者：黄颖\nE-mail: sonichy@163.com\n项目地址：http://sonichy.github.com\n界面和音乐版权：酷狗\n参考：\nhttps://github.com/ecitlm/Kugou-api\nhttps://www.cnblogs.com/xuhui24/p/6555761.html");
     label->setStyleSheet("font-size:15px;");
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignTop);
