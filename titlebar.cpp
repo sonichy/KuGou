@@ -11,6 +11,7 @@
 TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 {
     setStyleSheet("QPushButton { color:white; }"
+                  "QPushButton:pressed { background:rgba(0,131,221,100); }"
                   "QPushButton::menu-indicator{ width:0px; }"
                   "QMenu::item:selected { }"
                   "QLineEdit { font-size:12px; background-color:#CFEBF9; border:2px solid #CFEBF9; border-radius:10px;}"
@@ -141,7 +142,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     pushButton_close->setFocusPolicy(Qt::NoFocus);
     pushButton_close->setCursor(Qt::PointingHandCursor);
     pushButton_close->installEventFilter(this);
-    hbox->addWidget(pushButton_close);    
+    hbox->addWidget(pushButton_close);
 
     setLayout(hbox);
 }

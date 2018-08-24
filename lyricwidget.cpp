@@ -57,13 +57,15 @@ void LyricWidget::mousePressEvent(QMouseEvent *event)
 void LyricWidget::mouseMoveEvent(QMouseEvent *event)
 {
     //if(m_bPressed)
-        move(event->pos() - m_point + pos());
+    setCursor(Qt::ClosedHandCursor);
+    move(event->pos() - m_point + pos());
 }
 
 void LyricWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
     //m_bPressed = false;
+    setCursor(Qt::ArrowCursor);
     writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricX", QString::number(x()));
     writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricY", QString::number(y()));
 }
