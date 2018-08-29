@@ -32,7 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowFlags(Qt::FramelessWindowHint);
     resize(1000,700);
     move((QApplication::desktop()->width()-width())/2,(QApplication::desktop()->height()-height())/2);
-    setStyleSheet("QTabWidget::pane { border:0px; }"
+    setStyleSheet("QPushButton:hover { background:rgba(0,131,221,50); }"
+                  "QTabWidget::pane { border:0px; }"
                   "QTabWidget::tab-bar { alignment:center; }"
                   "QTabBar:tab { width:90px; height:40px; font-size:15px; border:0px; }"
                   "QTabBar::tab:selected { color:rgb(0,131,221); border-bottom:1px solid rgb(0,131,221); }");

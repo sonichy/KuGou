@@ -23,7 +23,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     QLabel *label_icon = new QLabel;
     label_icon->setFixedSize(40,40);
-    label_icon->setPixmap(QPixmap(":/icon.svg").scaled(label_icon->size(),Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation));
+    label_icon->setPixmap(QPixmap(":/icon.svg").scaled(label_icon->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     hbox->addWidget(label_icon);
 
     pushButton_login = new QPushButton("登录",this);
