@@ -23,14 +23,14 @@ public:
 
 private:
     TitleBar *titleBar;
-    NavWidget *navWidget;    
+    NavWidget *navWidget;
     QWidget *toplistWidget;
     QTabWidget *tabWidget, *repertory;
     QTableWidget *tableWidget_songlist, *tableWidget_songlistrank;
     QTextBrowser *textBrowser;
     ControlBar *controlBar;
     QMediaPlayer *player;
-    LyricWidget *lyricWidget;    
+    LyricWidget *lyricWidget;
     int volume, tabIndex;
     QByteArray getReply(QString surl);
     QByteArray postReply(QString surl,QString spost);
@@ -44,7 +44,7 @@ private:
     QString downloadPath;
     QString readSettings(QString path, QString group, QString key);
     void writeSettings(QString path, QString group, QString key, QString value);
-    QPushButton *pushButton_fontcolor, *pushButton_path;
+    QPushButton *pushButton_font, *pushButton_fontcolor, *pushButton_path;
     QVideoWidget *videoWidget;
     void rankChineseNew();
 
@@ -56,7 +56,7 @@ private slots:
     void positionChange(qint64 p);
     void stateChange(QMediaPlayer::State state);
     void volumeChange(int v);
-    void playPause();    
+    void playPause();
     void setMPPosition();
     void setVolume();
     void mute();

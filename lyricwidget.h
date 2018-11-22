@@ -16,6 +16,7 @@ public:
 
 private:
     QPoint m_point;
+    bool isMouseLeftButtonPressed;
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);

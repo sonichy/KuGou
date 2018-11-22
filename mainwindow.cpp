@@ -555,12 +555,12 @@ void MainWindow::on_action_settings_triggered()
     QHBoxLayout *hbox = new QHBoxLayout;
     QLabel *label = new QLabel("歌词");
     hbox->addWidget(label);
-    QPushButton *pushButton_font = new QPushButton;
+    pushButton_font = new QPushButton;
     QString sfont = lyricWidget->label_lyric->font().family() + "," + QString::number(lyricWidget->label_lyric->font().pointSize()) + "," + lyricWidget->label_lyric->font().weight() + "," + lyricWidget->label_lyric->font().italic();
     pushButton_font->setText(sfont);
     pushButton_font->setFocusPolicy(Qt::NoFocus);
     //pushButton_font->setFlat(true);
-    connect(pushButton_font,SIGNAL(pressed()),this,SLOT(chooseFont()));
+    connect(pushButton_font, SIGNAL(pressed()), this, SLOT(chooseFont()));
     hbox->addWidget(pushButton_font);
     pushButton_fontcolor = new QPushButton;
     pushButton_fontcolor->setText("■");
@@ -570,7 +570,7 @@ void MainWindow::on_action_settings_triggered()
     QBrush brush = plt.color(QPalette::WindowText);
     plt.setColor(QPalette::ButtonText, brush.color());
     pushButton_fontcolor->setPalette(plt);
-    connect(pushButton_fontcolor,SIGNAL(pressed()),this,SLOT(chooseFontColor()));
+    connect(pushButton_fontcolor, SIGNAL(pressed()), this, SLOT(chooseFontColor()));
     hbox->addWidget(pushButton_fontcolor);
     vbox->addLayout(hbox);
 
@@ -603,6 +603,7 @@ void MainWindow::chooseFont()
     if(ok){
        lyricWidget->label_lyric->setFont(font);
        QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + font.weight() + "," + font.italic();
+       pushButton_font->setText(sfont);
        writeSettings(QDir::currentPath() + "/config.ini", "config", "Font", sfont);
        lyricWidget->label_lyric->adjustSize();
        //qDebug() << "label_after" << desktopLyric->ui->label_lyric->size();
