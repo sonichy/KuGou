@@ -20,14 +20,14 @@ LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent)
     hbox->addStretch();
     pushButton_set = new QPushButton;
     pushButton_set->setFixedSize(24,24);
-    pushButton_set->setIcon(QIcon(":/set.svg"));
+    pushButton_set->setIcon(QIcon(":/icon/set.svg"));
     pushButton_set->setFocusPolicy(Qt::NoFocus);
     pushButton_set->setFlat(true);
     hbox->addWidget(pushButton_set);
 
     pushButton_close = new QPushButton;
     pushButton_close->setFixedSize(24,24);
-    pushButton_close->setIcon(QIcon(":/close.svg"));
+    pushButton_close->setIcon(QIcon(":/icon/close.svg"));
     pushButton_close->setFocusPolicy(Qt::NoFocus);
     pushButton_close->setFlat(true);
     hbox->addWidget(pushButton_close);

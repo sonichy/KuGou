@@ -23,7 +23,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     QLabel *label_icon = new QLabel;
     label_icon->setFixedSize(40,40);
-    label_icon->setPixmap(QPixmap(":/icon.svg").scaled(label_icon->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+    label_icon->setPixmap(QPixmap(":/icon/icon.svg").scaled(label_icon->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     hbox->addWidget(label_icon);
 
     pushButton_login = new QPushButton("登录",this);
@@ -57,13 +57,13 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     lineEdit_search->setPlaceholderText("搜索音乐、歌手、歌词、用户");
     lineEdit_search->setFixedWidth(200);
     action_search = new QAction(this);
-    action_search->setIcon(QIcon(":/search.svg"));
+    action_search->setIcon(QIcon(":/icon/search.svg"));
     lineEdit_search->addAction(action_search,QLineEdit::TrailingPosition);
     hbox->addWidget(lineEdit_search);
 
     pushButton_lastPage = new QPushButton;
     pushButton_lastPage->setFixedSize(24,24);
-    pushButton_lastPage->setIcon(QIcon(":/lastpage.svg"));
+    pushButton_lastPage->setIcon(QIcon(":/icon/lastpage.svg"));
     pushButton_lastPage->setIconSize(QSize(20,20));
     pushButton_lastPage->setFlat(true);
     pushButton_lastPage->setFocusPolicy(Qt::NoFocus);
@@ -82,7 +82,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     pushButton_nextPage = new QPushButton;
     pushButton_nextPage->setFixedSize(24,24);
-    pushButton_nextPage->setIcon(QIcon(":/nextpage.svg"));
+    pushButton_nextPage->setIcon(QIcon(":/icon/nextpage.svg"));
     pushButton_nextPage->setIconSize(QSize(20,20));
     pushButton_nextPage->setFlat(true);
     pushButton_nextPage->setFocusPolicy(Qt::NoFocus);
@@ -94,7 +94,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     QPushButton *pushButton_menu = new QPushButton;
     pushButton_menu->setFixedSize(24,24);
-    pushButton_menu->setIcon(QIcon(":/menu.svg"));
+    pushButton_menu->setIcon(QIcon(":/icon/menu.svg"));
     pushButton_menu->setIconSize(QSize(20,20));
     pushButton_menu->setFlat(true);
     pushButton_menu->setFocusPolicy(Qt::NoFocus);
@@ -114,7 +114,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     pushButton_minimize = new QPushButton;
     pushButton_minimize->setFixedSize(24,24);
-    pushButton_minimize->setIcon(QIcon(":/minimize.svg"));
+    pushButton_minimize->setIcon(QIcon(":/icon/minimize.svg"));
     pushButton_minimize->setIconSize(QSize(20,20));
     pushButton_minimize->setFlat(true);
     pushButton_minimize->setFocusPolicy(Qt::NoFocus);
@@ -125,7 +125,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     pushButton_maximize = new QPushButton;
     pushButton_maximize->setFixedSize(24,24);
-    pushButton_maximize->setIcon(QIcon(":/maximize.svg"));
+    pushButton_maximize->setIcon(QIcon(":/icon/maximize.svg"));
     pushButton_maximize->setIconSize(QSize(20,20));
     pushButton_maximize->setFlat(true);
     pushButton_maximize->setFocusPolicy(Qt::NoFocus);
@@ -136,7 +136,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     pushButton_close = new QPushButton;
     pushButton_close->setFixedSize(24,24);
-    pushButton_close->setIcon(QIcon(":/close.svg"));
+    pushButton_close->setIcon(QIcon(":/icon/close.svg"));
     pushButton_close->setIconSize(QSize(20,20));
     pushButton_close->setFlat(true);
     pushButton_close->setFocusPolicy(Qt::NoFocus);
@@ -190,7 +190,7 @@ void TitleBar::about()
     dialog->setFixedSize(500,350);
     QVBoxLayout *vbox = new QVBoxLayout;
     QLabel *label = new QLabel;
-    label->setPixmap(QPixmap(":/icon.svg").scaled(90,90,Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation));
+    label->setPixmap(QPixmap(":/icon/icon.svg").scaled(90,90,Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation));
     label->setAlignment(Qt::AlignCenter);
     vbox->addWidget(label);
     label = new QLabel;

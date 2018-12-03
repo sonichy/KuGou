@@ -28,7 +28,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowIcon(QIcon(":/icon.svg"));
+    setWindowIcon(QIcon(":/icon/icon.svg"));
     setWindowFlags(Qt::FramelessWindowHint);
     resize(1000,700);
     move((QApplication::desktop()->width()-width())/2,(QApplication::desktop()->height()-height())/2);
@@ -74,35 +74,35 @@ MainWindow::MainWindow(QWidget *parent)
     QListWidget *rankList = new QListWidget;
     rankList->setFixedWidth(140);
     QListWidgetItem *LWI;
-    LWI = new QListWidgetItem(QIcon(":/KU.svg"), "酷音乐排行榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/KU.svg"), "酷音乐排行榜");
     rankList->insertItem(0, LWI);
-    LWI = new QListWidgetItem(QIcon(":/N.svg"), "酷狗飙升榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/N.svg"), "酷狗飙升榜");
     rankList->insertItem(1, LWI);
-    LWI = new QListWidgetItem(QIcon(":/icon.svg"), "酷狗TOP500");
+    LWI = new QListWidgetItem(QIcon(":/icon/icon.svg"), "酷狗TOP500");
     rankList->insertItem(2, LWI);
-    LWI = new QListWidgetItem(QIcon(":/fire.svg"), "网络红歌榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/fire.svg"), "网络红歌榜");
     rankList->insertItem(3, LWI);
-    LWI = new QListWidgetItem(QIcon(":/DJ.svg"), "DJ热歌榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/DJ.svg"), "DJ热歌榜");
     rankList->insertItem(4, LWI);
-    LWI = new QListWidgetItem(QIcon(":/华.svg"), "华语新歌榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/华.svg"), "华语新歌榜");
     rankList->insertItem(5, LWI);
-    LWI = new QListWidgetItem(QIcon(":/euro.svg"),"欧美新歌榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/euro.svg"),"欧美新歌榜");
     rankList->insertItem(6, LWI);
-    LWI = new QListWidgetItem(QIcon(":/SouthKorea.svg"), "韩国新歌榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/SouthKorea.svg"), "韩国新歌榜");
     rankList->insertItem(7, LWI);
-    LWI = new QListWidgetItem(QIcon(":/sakura.svg"), "日本新歌榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/sakura.svg"), "日本新歌榜");
     rankList->insertItem(8, LWI);
-    LWI = new QListWidgetItem(QIcon(":/歌.svg"), "歌手第二季榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/歌.svg"), "歌手第二季榜");
     rankList->insertItem(9, LWI);
-    LWI = new QListWidgetItem(QIcon(":/乐人.png"), "腾讯音乐人原创榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/乐人.png"), "腾讯音乐人原创榜");
     rankList->insertItem(10, LWI);
-    LWI = new QListWidgetItem(QIcon(":/粤.svg"), "粤语新歌榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/粤.svg"), "粤语新歌榜");
     rankList->insertItem(11, LWI);
-    LWI = new QListWidgetItem(QIcon(":/hand.png"), "酷狗分享榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/hand.png"), "酷狗分享榜");
     rankList->insertItem(12, LWI);
-    LWI = new QListWidgetItem(QIcon(":/5sing.png"), "5sing音乐榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/5sing.png"), "5sing音乐榜");
     rankList->insertItem(13, LWI);
-    LWI = new QListWidgetItem(QIcon(":/fanxing.png"), "繁星音乐榜");
+    LWI = new QListWidgetItem(QIcon(":/icon/fanxing.png"), "繁星音乐榜");
     rankList->insertItem(14, LWI);
     connect(rankList,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(rankListItemClick(QListWidgetItem*)));
     hbox_rank->addWidget(rankList);
@@ -248,10 +248,10 @@ void MainWindow::showNormalMaximize()
     //qDebug() << "isMaximized=" << isMaximized();
     if(isMaximized()){
         showNormal();
-        titleBar->pushButton_maximize->setIcon(QIcon(":/maximize.svg"));
+        titleBar->pushButton_maximize->setIcon(QIcon(":/icon/maximize.svg"));
     }else{
         showMaximized();
-        titleBar->pushButton_maximize->setIcon(QIcon(":/normal.svg"));
+        titleBar->pushButton_maximize->setIcon(QIcon(":/icon/normal.svg"));
     }
 }
 
@@ -380,13 +380,13 @@ void MainWindow::stateChange(QMediaPlayer::State state)
 {
     //qDebug() << state;
     if(state == QMediaPlayer::PlayingState){
-        controlBar->pushButton_play->setIcon(QIcon(":/pause.svg"));
+        controlBar->pushButton_play->setIcon(QIcon(":/icon/pause.svg"));
     }
     if(state == QMediaPlayer::PausedState){
-        controlBar->pushButton_play->setIcon(QIcon(":/play.svg"));
+        controlBar->pushButton_play->setIcon(QIcon(":/icon/play.svg"));
     }
     if(state == QMediaPlayer::StoppedState){
-        controlBar->pushButton_play->setIcon(QIcon(":/play.svg"));
+        controlBar->pushButton_play->setIcon(QIcon(":/icon/play.svg"));
     }
 }
 
@@ -461,7 +461,7 @@ void MainWindow::search()
             if(mvhash != ""){
                 QPushButton *pushButton_MV = new QPushButton;
                 pushButton_MV->setFixedSize(24,24);
-                pushButton_MV->setIcon(QIcon(":/video.svg"));
+                pushButton_MV->setIcon(QIcon(":/icon/video.svg"));
                 pushButton_MV->setIconSize(QSize(24,24));
                 //pushButton_MV->setFocusPolicy(Qt::NoFocus);
                 pushButton_MV->setFlat(true);
@@ -805,10 +805,11 @@ void MainWindow::rankChineseNew()
         if(mvhash!=""){
             QPushButton *pushButton_MV = new QPushButton;
             pushButton_MV->setFixedSize(24,24);
-            pushButton_MV->setIcon(QIcon(":/video.svg"));
+            pushButton_MV->setIcon(QIcon(":/icon/video.svg"));
             pushButton_MV->setIconSize(QSize(24,24));
             pushButton_MV->setFocusPolicy(Qt::NoFocus);
             pushButton_MV->setFlat(true);
+            pushButton_MV->setCursor(QCursor(Qt::PointingHandCursor));
             connect(pushButton_MV, SIGNAL(clicked()), this, SLOT(rankPushButtonMVClicked()));
             tableWidget_songlistrank->setCellWidget(i,3,pushButton_MV);
         }
