@@ -212,8 +212,9 @@ void TitleBar::about()
 void TitleBar::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
-    QPainter p(this);
-    p.setPen(Qt::NoPen);
-    p.setBrush(QColor(0,131,221));
-    p.drawRect(rect());
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(QColor(0,131,221));
+    painter.drawRect(rect());
 }

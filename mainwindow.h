@@ -21,6 +21,9 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    void resizeEvent(QResizeEvent *event);
+
 private:
     TitleBar *titleBar;
     NavWidget *navWidget;
@@ -83,6 +86,7 @@ private slots:
     void dialogDownload();
     void download(QString surl, QString filepath);
     void updateProgress(qint64 bytesReceived, qint64 bytesTotal);
+
 };
 
 #endif // MAINWINDOW_H

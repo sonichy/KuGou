@@ -24,6 +24,7 @@
 #include <QSettings>
 #include <QPushButton>
 #include <QShortcut>
+#include <QBitmap>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -31,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowIcon(QIcon(":/icon/icon.svg"));
     setWindowFlags(Qt::FramelessWindowHint);
     resize(1000,700);
+
     move((QApplication::desktop()->width()-width())/2,(QApplication::desktop()->height()-height())/2);
     setStyleSheet("QPushButton:hover { background:rgba(0,131,221,50); }"
                   "QTabWidget::pane { border:0px; }"
@@ -46,15 +48,15 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->setContentsMargins(0,0,0,0);
 
     titleBar = new TitleBar;
-    connect(titleBar->action_search,SIGNAL(triggered(bool)),this,SLOT(preSearch()));
-    connect(titleBar->lineEdit_search,SIGNAL(returnPressed()),this,SLOT(preSearch()));
-    connect(titleBar->lineEdit_page,SIGNAL(returnPressed()),this,SLOT(search()));
-    connect(titleBar->pushButton_lastPage,SIGNAL(clicked(bool)),this,SLOT(lastPage()));
-    connect(titleBar->pushButton_nextPage,SIGNAL(clicked(bool)),this,SLOT(nextPage()));
-    connect(titleBar->pushButton_minimize,SIGNAL(clicked(bool)),this,SLOT(showMinimized()));
-    connect(titleBar->pushButton_maximize,SIGNAL(clicked(bool)),this,SLOT(showNormalMaximize()));
-    connect(titleBar->pushButton_close,SIGNAL(clicked(bool)),qApp,SLOT(quit()));
-    connect(titleBar,SIGNAL(moveMainWindow(QPoint)),this,SLOT(moveMe(QPoint)));
+    connect(titleBar->action_search, SIGNAL(triggered(bool)), this, SLOT(preSearch()));
+    connect(titleBar->lineEdit_search, SIGNAL(returnPressed()), this, SLOT(preSearch()));
+    connect(titleBar->lineEdit_page, SIGNAL(returnPressed()), this, SLOT(search()));
+    connect(titleBar->pushButton_lastPage, SIGNAL(clicked(bool)), this, SLOT(lastPage()));
+    connect(titleBar->pushButton_nextPage, SIGNAL(clicked(bool)), this, SLOT(nextPage()));
+    connect(titleBar->pushButton_minimize, SIGNAL(clicked(bool)), this, SLOT(showMinimized()));
+    connect(titleBar->pushButton_maximize, SIGNAL(clicked(bool)), this, SLOT(showNormalMaximize()));
+    connect(titleBar->pushButton_close, SIGNAL(clicked(bool)), qApp, SLOT(quit()));
+    connect(titleBar, SIGNAL(moveMainWindow(QPoint)), this, SLOT(moveMe(QPoint)));
     vbox->addWidget(titleBar);
 
     QHBoxLayout *hbox = new QHBoxLayout;
@@ -917,4 +919,19 @@ void MainWindow::updateProgress(qint64 bytesReceived, qint64 bytesTotal)
                                       .arg(p-0.001)
                                       .arg(p));
     qDebug() << p << controlBar->pushButton_download->styleSheet();
+}
+
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    Q_UNUSED(event);
+    //圆角 https://jingyan.baidu.com/article/219f4bf799ccccde442d381d.html
+    QBitmap bitmap(size());
+    bitmap.fill();
+    QPainter painter(&bitmap);
+    //painter.setRenderHint(QPainter::Antialiasing, true);  //无效
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(Qt::black);
+    painter.drawRoundedRect(bitmap.rect(),10,10);
+    setMask(bitmap);
 }

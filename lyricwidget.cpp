@@ -18,11 +18,13 @@ LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent)
 
     QHBoxLayout *hbox = new QHBoxLayout;
     hbox->addStretch();
+
     pushButton_set = new QPushButton;
     pushButton_set->setFixedSize(24,24);
     pushButton_set->setIcon(QIcon(":/icon/set.svg"));
     pushButton_set->setFocusPolicy(Qt::NoFocus);
     pushButton_set->setFlat(true);
+    pushButton_set->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_set);
 
     pushButton_close = new QPushButton;
@@ -30,7 +32,9 @@ LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent)
     pushButton_close->setIcon(QIcon(":/icon/close.svg"));
     pushButton_close->setFocusPolicy(Qt::NoFocus);
     pushButton_close->setFlat(true);
+    pushButton_close->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_close);
+
     vbox->addLayout(hbox);
 
     label_lyric = new QLabel;
