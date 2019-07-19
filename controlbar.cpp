@@ -37,6 +37,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_play->setFocusPolicy(Qt::NoFocus);
     pushButton_play->setFlat(true);
     pushButton_play->setCursor(Qt::PointingHandCursor);
+    pushButton_play->setShortcut(Qt::Key_Space);
     hbox->addWidget(pushButton_play);
 
     pushButton_next = new QPushButton;
@@ -154,6 +155,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_fullscreen->setFocusPolicy(Qt::NoFocus);
     pushButton_fullscreen->setFlat(true);
     pushButton_fullscreen->setCursor(Qt::PointingHandCursor);
+    pushButton_fullscreen->setShortcut(QKeySequence::FullScreen);
     hbox->addWidget(pushButton_fullscreen);
 
     setLayout(hbox);

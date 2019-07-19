@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *hbox_rank = new QHBoxLayout;
     hbox_rank->setSpacing(0);
     QListWidget *rankList = new QListWidget;
-    rankList->setFixedWidth(140);
+    rankList->setFixedWidth(145);
     QListWidgetItem *LWI;
     LWI = new QListWidgetItem(QIcon(":/icon/KU.svg"), "酷音乐排行榜");
     rankList->insertItem(0, LWI);
@@ -221,25 +221,29 @@ QByteArray MainWindow::getReply(QString surl)
     QNetworkAccessManager *NAM = new QNetworkAccessManager;
     QNetworkRequest request;
     request.setUrl(QUrl(surl));
+    // 播放音乐Cookie的kg_mid算法　https://blog.csdn.net/ychgyyn/article/details/90110296，随便写一个好像可以了。
+    if (surl.startsWith("http://www.kugou.com/yy/index.php?r=play/getdata&hash=")) {
+        request.setRawHeader("Cookie", "kg_mid=355721c2749fe30472161adf09b5748d");
+    }
     QNetworkReply *reply = NAM->get(request);
     QEventLoop loop;
-    connect(reply,&QNetworkReply::finished,&loop,&QEventLoop::quit);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
     reply->deleteLater();
     return reply->readAll();
 }
 
-QByteArray MainWindow::postReply(QString surl,QString spost)
+QByteArray MainWindow::postReply(QString surl, QString spost)
 {
     QNetworkAccessManager *NAM = new QNetworkAccessManager;
     QNetworkRequest request;
     request.setUrl(QUrl(surl));
-    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     QByteArray BA_post;
     BA_post.append(spost);
-    QNetworkReply *reply = NAM->post(request,BA_post);
+    QNetworkReply *reply = NAM->post(request, BA_post);
     QEventLoop loop;
-    connect(reply,&QNetworkReply::finished,&loop,&QEventLoop::quit);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
     reply->deleteLater();
     return reply->readAll();
@@ -262,6 +266,7 @@ void MainWindow::playSong(int row, int column)
     Q_UNUSED(column);
     QString hash = tableWidget_songlist->item(row,4)->text();
     QString surl = "http://www.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
+    //QString surl = "https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
     qDebug() << surl;
     QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
     QString songurl = json.object().value("data").toObject().value("play_url").toString();
@@ -273,7 +278,7 @@ void MainWindow::playSong(int row, int column)
     lyricWidget->label_lyric->setText(songname);
     setLyric(json.object().value("data").toObject().value("lyrics").toString());
     QString imgurl = json.object().value("data").toObject().value("img").toString();
-    if(imgurl!=""){
+    if(imgurl != ""){
         QPixmap pixmap;
         pixmap.loadFromData(getReply(imgurl));
         navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
@@ -289,9 +294,11 @@ void MainWindow::playSongRank(int row, int column)
     Q_UNUSED(column);
     QString hash = tableWidget_songlistrank->item(row,1)->text();
     QString surl = "http://www.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
+    //QString surl = "https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
     qDebug() << surl;
     QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
     QString songurl = json.object().value("data").toObject().value("play_url").toString();
+    //qDebug() << json;
     player->setMedia(QUrl(songurl));
     player->play();
     QString songname = tableWidget_songlistrank->item(row,0)->text();
@@ -300,7 +307,7 @@ void MainWindow::playSongRank(int row, int column)
     lyricWidget->label_lyric->setText(songname);
     setLyric(json.object().value("data").toObject().value("lyrics").toString());
     QString imgurl = json.object().value("data").toObject().value("img").toString();
-    if(imgurl!=""){
+    if(imgurl != ""){
         QPixmap pixmap;
         pixmap.loadFromData(getReply(imgurl));
         navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
@@ -382,7 +389,7 @@ void MainWindow::stateChange(QMediaPlayer::State state)
 {
     //qDebug() << state;
     if(state == QMediaPlayer::PlayingState){
-        controlBar->pushButton_play->setIcon(QIcon(":/icon/pause.svg"));
+        controlBar->pushButton_play->setIcon(QIcon(":icon/pause.svg"));
     }
     if(state == QMediaPlayer::PausedState){
         controlBar->pushButton_play->setIcon(QIcon(":/icon/play.svg"));
@@ -732,10 +739,10 @@ void MainWindow::pushButtonMVClicked()
     qDebug() << surl;
     QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
     QString mvurl = json.object().value("mvdata").toObject().value("rq").toObject().value("downurl").toString();
-    if(mvurl==""){
+    if(mvurl == ""){
         mvurl = json.object().value("mvdata").toObject().value("sq").toObject().value("downurl").toString();
     }
-    if(mvurl==""){
+    if(mvurl == ""){
         mvurl = json.object().value("mvdata").toObject().value("le").toObject().value("downurl").toString();
     }
     qDebug() << mvurl;
@@ -765,10 +772,10 @@ void MainWindow::rankPushButtonMVClicked()
     qDebug() << surl;
     QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
     QString mvurl = json.object().value("mvdata").toObject().value("rq").toObject().value("downurl").toString();
-    if(mvurl==""){
+    if(mvurl == ""){
         mvurl = json.object().value("mvdata").toObject().value("sq").toObject().value("downurl").toString();
     }
-    if(mvurl==""){
+    if(mvurl == ""){
         mvurl = json.object().value("mvdata").toObject().value("le").toObject().value("downurl").toString();
     }
     qDebug() << mvurl;
@@ -804,7 +811,7 @@ void MainWindow::rankChineseNew()
         tableWidget_songlistrank->setItem(i,1,new QTableWidgetItem(songs[i].toObject().value("hash").toString()));
         QString mvhash = songs[i].toObject().value("mvhash").toString();
         tableWidget_songlistrank->setItem(i,2,new QTableWidgetItem(mvhash));
-        if(mvhash!=""){
+        if (mvhash != "") {
             QPushButton *pushButton_MV = new QPushButton;
             pushButton_MV->setFixedSize(24,24);
             pushButton_MV->setIcon(QIcon(":/icon/video.svg"));
@@ -847,7 +854,7 @@ void MainWindow::exitFullscreen()
 void MainWindow::dialogDownload()
 {
     QDialog *dialog = new QDialog(this);
-    dialog->setFixedWidth(200);
+    dialog->setFixedWidth(300);
     dialog->setWindowTitle("下载");
     QGridLayout *gridLayout = new QGridLayout;
     QLabel *label = new QLabel("歌名");
@@ -932,6 +939,10 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     //painter.setRenderHint(QPainter::Antialiasing, true);  //无效
     painter.setPen(Qt::NoPen);
     painter.setBrush(Qt::black);
-    painter.drawRoundedRect(bitmap.rect(),10,10);
+    if(isFullScreen()){
+        painter.drawRect(bitmap.rect());
+    }else{
+        painter.drawRoundedRect(bitmap.rect(),10,10);
+    }
     setMask(bitmap);
 }
