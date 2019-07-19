@@ -155,7 +155,8 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_fullscreen->setFocusPolicy(Qt::NoFocus);
     pushButton_fullscreen->setFlat(true);
     pushButton_fullscreen->setCursor(Qt::PointingHandCursor);
-    pushButton_fullscreen->setShortcut(QKeySequence::FullScreen);
+    //pushButton_fullscreen->setShortcut(QKeySequence::FullScreen);
+    pushButton_fullscreen->setShortcut(Qt::Key_F11);
     hbox->addWidget(pushButton_fullscreen);
 
     setLayout(hbox);
