@@ -158,12 +158,12 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->addLayout(hbox);
 
     controlBar = new ControlBar;
-    connect(controlBar->pushButton_last,SIGNAL(pressed()),this,SLOT(playLast()));
-    connect(controlBar->pushButton_play,SIGNAL(pressed()),this,SLOT(playPause()));
-    connect(controlBar->pushButton_next,SIGNAL(pressed()),this,SLOT(playNext()));
-    connect(controlBar->pushButton_songname,SIGNAL(pressed()),this,SLOT(swapLyric()));
-    connect(controlBar->pushButton_mute,SIGNAL(pressed()),this,SLOT(mute()));
-    connect(controlBar->pushButton_lyric,SIGNAL(clicked(bool)),this,SLOT(showHideLyric(bool)));
+    connect(controlBar->pushButton_last, SIGNAL(pressed()), this, SLOT(playLast()));
+    connect(controlBar->pushButton_play, SIGNAL(pressed()), this, SLOT(playPause()));
+    connect(controlBar->pushButton_next, SIGNAL(pressed()),this, SLOT(playNext()));
+    connect(controlBar->pushButton_songname, SIGNAL(pressed()), this, SLOT(swapLyric()));
+    connect(controlBar->pushButton_mute, SIGNAL(pressed()), this, SLOT(mute()));
+    connect(controlBar->pushButton_lyric, SIGNAL(clicked(bool)), this, SLOT(showHideLyric(bool)));
     connect(controlBar->pushButton_playlist,SIGNAL(clicked(bool)),this,SLOT(showHidePlayList(bool)));
     connect(controlBar->pushButton_download,SIGNAL(pressed()),this,SLOT(dialogDownload()));
     connect(controlBar->pushButton_fullscreen,SIGNAL(pressed()),this,SLOT(enterFullscreen()));
@@ -426,12 +426,12 @@ void MainWindow::mute()
 {
     if(player->isMuted()){
         player->setMuted(false);
-        controlBar->pushButton_mute->setIcon(QIcon(":/volume.svg"));
+        controlBar->pushButton_mute->setIcon(QIcon(":/icon/volume.svg"));
         controlBar->slider_volume->setValue(volume);
     }else{
         volume = player->volume();
         player->setMuted(true);
-        controlBar->pushButton_mute->setIcon(QIcon(":/mute.svg"));
+        controlBar->pushButton_mute->setIcon(QIcon(":/icon/mute.svg"));
         controlBar->slider_volume->setValue(0);
     }
 }
