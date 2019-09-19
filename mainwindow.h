@@ -86,6 +86,8 @@ private slots:
     void dialogDownload();
     void download(QString surl, QString filepath);
     void updateProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void seekBack();
+    void seekForward();
 
 };
 

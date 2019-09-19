@@ -25,6 +25,7 @@
 #include <QPushButton>
 #include <QShortcut>
 #include <QBitmap>
+#include <QDesktopServices>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -180,6 +181,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(player,SIGNAL(volumeChanged(int)),this,SLOT(volumeChange(int)));
     //connect(player,SIGNAL(error(QMediaPlayer::Error)),this,SLOT(errorHandle(QMediaPlayer::Error)));
     connect(player,SIGNAL(stateChanged(QMediaPlayer::State)),SLOT(stateChange(QMediaPlayer::State)));
+    connect(new QShortcut(QKeySequence(Qt::Key_Left),this), SIGNAL(activated()), this, SLOT(seekBack()));
+    connect(new QShortcut(QKeySequence(Qt::Key_Right),this), SIGNAL(activated()), this, SLOT(seekForward()));
 
     lyricWidget = new LyricWidget;
     connect(lyricWidget->pushButton_set,SIGNAL(pressed()),this,SLOT(on_action_settings_triggered()));
@@ -867,15 +870,21 @@ void MainWindow::dialogDownload()
     QLineEdit *lineEdit_url = new QLineEdit;
     lineEdit_url->setText(player->media().canonicalUrl().toString());
     gridLayout->addWidget(lineEdit_url,1,1,1,1);
-    label = new QLabel("保存路径");
-    gridLayout->addWidget(label,2,0,1,1);
+    //label = new QLabel("保存路径");
+    //gridLayout->addWidget(label,2,0,1,1);
+    QPushButton *pushbutton_openpath = new QPushButton("保存路径");
+    pushbutton_openpath->setStyleSheet("border:none;");
+    gridLayout->addWidget(pushbutton_openpath,2,0,1,1);
     pushButton_path = new QPushButton;
     pushButton_path->setObjectName("DownloadDialogPath");
     pushButton_path->setFocusPolicy(Qt::NoFocus);
     downloadPath = readSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath");
     pushButton_path->setText(downloadPath);
     pushButton_path->setToolTip(downloadPath);
-    connect(pushButton_path,SIGNAL(pressed()),this,SLOT(chooseDownloadPath()));
+    connect(pushButton_path, SIGNAL(pressed()), this, SLOT(chooseDownloadPath()));
+    connect(pushbutton_openpath, &QPushButton::clicked, [=](){
+         QDesktopServices::openUrl(QUrl(downloadPath));
+    });
     gridLayout->addWidget(pushButton_path,2,1,1,1);
     dialog->setLayout(gridLayout);
     QHBoxLayout *hbox = new QHBoxLayout;
@@ -899,21 +908,29 @@ void MainWindow::dialogDownload()
 
 void MainWindow::download(QString surl, QString filepath)
 {
-    controlBar->pushButton_download->setEnabled(false);
+    //controlBar->pushButton_download->setEnabled(false);//禁用按钮背景色不显示
     qDebug() <<  "download -> " << surl << "->" << filepath;
     QUrl url = QString(surl);
     QNetworkAccessManager *NAM = new QNetworkAccessManager;
     QNetworkRequest request(url);
     QNetworkReply *reply = NAM->get(request);
-    QEventLoop loop;
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    loop.exec();
-    QFile file(filepath);
-    file.open(QIODevice::WriteOnly);
-    file.write(reply->readAll());
-    file.close();
-    //ui->pushButton_download->setText("↓");
-    controlBar->pushButton_download->setEnabled(true);
+    connect(reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(updateProgress(qint64,qint64)));
+    connect(reply, &QNetworkReply::finished, [=]() {
+        qDebug() << reply->errorString();
+        switch (reply->error()) {
+        case QNetworkReply::NoError :{
+            QFile file(filepath);
+            file.open(QIODevice::WriteOnly);
+            file.write(reply->readAll());
+            file.flush();
+            file.close();
+            break;}
+        default:
+            break;
+        }
+        //controlBar->pushButton_download->setEnabled(true);
+        reply->deleteLater();
+    });
 }
 
 void MainWindow::updateProgress(qint64 bytesReceived, qint64 bytesTotal)
@@ -945,4 +962,14 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         painter.drawRoundedRect(bitmap.rect(),10,10);
     }
     setMask(bitmap);
+}
+
+void MainWindow::seekBack()
+{
+    player->setPosition(player->position() - 5000);
+}
+
+void MainWindow::seekForward()
+{
+    player->setPosition(player->position() + 5000);
 }
