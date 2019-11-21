@@ -3,10 +3,12 @@
 #include <QHBoxLayout>
 #include <QDir>
 #include <QSettings>
+#include <QCoreApplication>
 
-LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent)
+LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent),
+    settings(QCoreApplication::organizationName(), QCoreApplication::applicationName())
 {
-    resize(600,120);
+    resize(800,120);
 
     setAttribute(Qt::WA_TranslucentBackground,true);
     setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -37,7 +39,7 @@ LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent)
 
     vbox->addLayout(hbox);
 
-    label_lyric = new QLabel;
+    label_lyric = new QLabel("Hello，酷狗！");
     label_lyric->setAlignment(Qt::AlignCenter);
     QFont font;
     font.setPointSize(30);
@@ -71,8 +73,10 @@ void LyricWidget::mouseReleaseEvent(QMouseEvent *event)
     Q_UNUSED(event);
     isMouseLeftButtonPressed = false;
     setCursor(Qt::ArrowCursor);
-    writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricX", QString::number(x()));
-    writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricY", QString::number(y()));
+    //writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricX", QString::number(x()));
+    //writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricY", QString::number(y()));
+    settings.setValue("LyricX", x());
+    settings.setValue("LyricY", y());
 }
 
 void LyricWidget::enterEvent(QEvent *event)
@@ -89,12 +93,4 @@ void LyricWidget::leaveEvent(QEvent *event)
     setStyleSheet("");
     pushButton_close->setVisible(false);
     pushButton_set->setVisible(false);
-}
-
-void LyricWidget::writeSettings(QString path, QString group, QString key, QString value)
-{
-    QSettings *config = new QSettings(path, QSettings::IniFormat);
-    config->beginGroup(group);
-    config->setValue(key, value);
-    config->endGroup();
 }

@@ -12,6 +12,7 @@
 #include <QTextBrowser>
 #include <QTime>
 #include <QVideoWidget>
+#include <QSettings>
 
 class MainWindow : public QMainWindow
 {
@@ -50,6 +51,7 @@ private:
     QPushButton *pushButton_font, *pushButton_fontcolor, *pushButton_path;
     QVideoWidget *videoWidget;
     void rankChineseNew();
+    QSettings settings;
 
 private slots:
     void showNormalMaximize();
@@ -70,7 +72,7 @@ private slots:
     void swapLyric();
     void hideLyric();
     void showHideLyric(bool);
-    void on_action_settings_triggered();
+    void showSetDialog();
     void chooseFont();
     void chooseFontColor();
     void chooseDownloadPath();

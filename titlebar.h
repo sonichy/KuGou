@@ -16,7 +16,7 @@ public:
     explicit TitleBar(QWidget *parent = nullptr);
     QPushButton *pushButton_login, *pushButton_register, *pushButton_lastPage, *pushButton_nextPage, *pushButton_minimize, *pushButton_maximize, *pushButton_close;
     QLineEdit *lineEdit_search, *lineEdit_page;
-    QAction *action_search;
+    QAction *action_search, *action_set;
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QMouseEvent>
+#include <QSettings>
 
 class LyricWidget : public QWidget
 {
@@ -22,7 +23,7 @@ private:
     void mouseReleaseEvent(QMouseEvent *event);
     void enterEvent(QEvent *event);
     void leaveEvent(QEvent *event);
-    void writeSettings(QString path, QString group, QString key, QString value);
+    QSettings settings;
 
 signals:
 

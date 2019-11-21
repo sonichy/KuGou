@@ -28,7 +28,8 @@
 #include <QDesktopServices>
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent),
+    settings(QCoreApplication::organizationName(), QCoreApplication::applicationName())
 {
     setWindowIcon(QIcon(":/icon/icon.svg"));
     setWindowFlags(Qt::FramelessWindowHint);
@@ -57,12 +58,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(titleBar->pushButton_minimize, SIGNAL(clicked(bool)), this, SLOT(showMinimized()));
     connect(titleBar->pushButton_maximize, SIGNAL(clicked(bool)), this, SLOT(showNormalMaximize()));
     connect(titleBar->pushButton_close, SIGNAL(clicked(bool)), qApp, SLOT(quit()));
+    connect(titleBar->action_set, SIGNAL(triggered()),this,SLOT(showSetDialog()));
     connect(titleBar, SIGNAL(moveMainWindow(QPoint)), this, SLOT(moveMe(QPoint)));
     vbox->addWidget(titleBar);
 
     QHBoxLayout *hbox = new QHBoxLayout;
     navWidget = new NavWidget;
-    connect(navWidget->pushButton_albumPic,SIGNAL(clicked(bool)),this,SLOT(swapLyric()));
+    connect(navWidget->pushButton_albumPic, SIGNAL(clicked(bool)), this, SLOT(swapLyric()));
     hbox->addWidget(navWidget);
 
     tabWidget = new QTabWidget;
@@ -165,44 +167,45 @@ MainWindow::MainWindow(QWidget *parent)
     connect(controlBar->pushButton_songname, SIGNAL(pressed()), this, SLOT(swapLyric()));
     connect(controlBar->pushButton_mute, SIGNAL(pressed()), this, SLOT(mute()));
     connect(controlBar->pushButton_lyric, SIGNAL(clicked(bool)), this, SLOT(showHideLyric(bool)));
-    connect(controlBar->pushButton_playlist,SIGNAL(clicked(bool)),this,SLOT(showHidePlayList(bool)));
-    connect(controlBar->pushButton_download,SIGNAL(pressed()),this,SLOT(dialogDownload()));
-    connect(controlBar->pushButton_fullscreen,SIGNAL(pressed()),this,SLOT(enterFullscreen()));
-    connect(controlBar->slider_progress,SIGNAL(sliderReleased()),this,SLOT(setMPPosition()));
-    connect(controlBar->slider_volume,SIGNAL(sliderReleased()),this,SLOT(setVolume()));
-    //connect(controlBar->comboBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(changeQuality(QString)));
+    connect(controlBar->pushButton_playlist, SIGNAL(clicked(bool)), this, SLOT(showHidePlayList(bool)));
+    connect(controlBar->pushButton_download, SIGNAL(pressed()), this, SLOT(dialogDownload()));
+    connect(controlBar->pushButton_fullscreen, SIGNAL(pressed()), this, SLOT(enterFullscreen()));
+    connect(controlBar->slider_progress, SIGNAL(sliderReleased()), this, SLOT(setMPPosition()));
+    connect(controlBar->slider_volume, SIGNAL(sliderReleased()), this, SLOT(setVolume()));
+    //connect(controlBar->comboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(changeQuality(QString)));
     vbox->addWidget(controlBar);
     widget->setLayout(vbox);
 
     player = new QMediaPlayer;
     player->setVideoOutput(videoWidget);
-    connect(player,SIGNAL(durationChanged(qint64)),this,SLOT(durationChange(qint64)));
-    connect(player,SIGNAL(positionChanged(qint64)),this,SLOT(positionChange(qint64)));
-    connect(player,SIGNAL(volumeChanged(int)),this,SLOT(volumeChange(int)));
-    //connect(player,SIGNAL(error(QMediaPlayer::Error)),this,SLOT(errorHandle(QMediaPlayer::Error)));
-    connect(player,SIGNAL(stateChanged(QMediaPlayer::State)),SLOT(stateChange(QMediaPlayer::State)));
+    connect(player, SIGNAL(durationChanged(qint64)), this, SLOT(durationChange(qint64)));
+    connect(player, SIGNAL(positionChanged(qint64)), this, SLOT(positionChange(qint64)));
+    connect(player, SIGNAL(volumeChanged(int)), this, SLOT(volumeChange(int)));
+    //connect(player, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(errorHandle(QMediaPlayer::Error)));
+    connect(player, SIGNAL(stateChanged(QMediaPlayer::State)), SLOT(stateChange(QMediaPlayer::State)));
     connect(new QShortcut(QKeySequence(Qt::Key_Left),this), SIGNAL(activated()), this, SLOT(seekBack()));
     connect(new QShortcut(QKeySequence(Qt::Key_Right),this), SIGNAL(activated()), this, SLOT(seekForward()));
 
     lyricWidget = new LyricWidget;
-    connect(lyricWidget->pushButton_set,SIGNAL(pressed()),this,SLOT(on_action_settings_triggered()));
-    connect(lyricWidget->pushButton_close,SIGNAL(pressed()),this,SLOT(hideLyric()));
-    QString slx = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricX");
-    QString sly = readSettings(QDir::currentPath() + "/config.ini", "config", "LyricY");
-    if(slx=="" || sly=="" || slx.toInt()>QApplication::desktop()->width() || sly.toInt()>QApplication::desktop()->height()){
+    connect(lyricWidget->pushButton_set, SIGNAL(pressed()), this, SLOT(showSetDialog()));
+    connect(lyricWidget->pushButton_close, SIGNAL(pressed()), this, SLOT(hideLyric()));
+    int lx = settings.value("LyricX").toInt();
+    int ly = settings.value("LyricY").toInt();
+    qDebug() << lx << ly;
+    if (lx==0 || ly==0 || lx>QApplication::desktop()->width() || ly>QApplication::desktop()->height()) {
         lyricWidget->move((QApplication::desktop()->width()-lyricWidget->width())/2, QApplication::desktop()->height()-lyricWidget->height());
-    }else{
-        lyricWidget->move(slx.toInt(),sly.toInt());
+    } else {
+        lyricWidget->move(lx, ly);
     }
-    //qDebug() << "歌词坐标" << slx << sly;
-    QColor color(readSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColor"));
+
+    QColor color(settings.value("LyricFontColor").toString());
     QPalette plt;
     plt.setColor(QPalette::WindowText, color);
     lyricWidget->label_lyric->setPalette(plt);
-    QString sfont = readSettings(QDir::currentPath() + "/config.ini", "config", "Font");
-    if(sfont!=""){
+    QString sfont = settings.value("LyricFont").toString();
+    if(sfont != ""){
         QStringList SLFont = sfont.split(",");
-        lyricWidget->label_lyric->setFont(QFont(SLFont.at(0),SLFont.at(1).toInt(),SLFont.at(2).toInt(),SLFont.at(3).toInt()));
+        lyricWidget->label_lyric->setFont(QFont(SLFont.at(0),  SLFont.at(1).toInt(), SLFont.at(2).toInt(), SLFont.at(3).toInt()));
     }
     lyricWidget->show();
 
@@ -552,12 +555,13 @@ void MainWindow::showHideLyric(bool b)
 {
     if(b){
         lyricWidget->show();
+        qDebug() << lyricWidget->x() << lyricWidget->y();
     }else{
         lyricWidget->hide();
     }
 }
 
-void MainWindow::on_action_settings_triggered()
+void MainWindow::showSetDialog()
 {
     QDialog *dialog_set = new QDialog(this);
     dialog_set->setWindowTitle("设置");
@@ -590,9 +594,9 @@ void MainWindow::on_action_settings_triggered()
     label = new QLabel("保存路径");
     hbox->addWidget(label);
     lineEdit_downloadPath = new QLineEdit;
-    downloadPath = readSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath");
-    if(downloadPath==""){
-        lineEdit_downloadPath->setText(QStandardPaths::standardLocations(QStandardPaths::MusicLocation).first());
+    downloadPath = settings.value("DownloadPath").toString();
+    if(downloadPath == ""){
+        lineEdit_downloadPath->setText(QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
     }else{
         lineEdit_downloadPath->setText(downloadPath);
     }
@@ -616,7 +620,7 @@ void MainWindow::chooseFont()
        lyricWidget->label_lyric->setFont(font);
        QString sfont = font.family() + "," + QString::number(font.pointSize()) + "," + font.weight() + "," + font.italic();
        pushButton_font->setText(sfont);
-       writeSettings(QDir::currentPath() + "/config.ini", "config", "Font", sfont);
+       settings.setValue("LyricFont", sfont);
        lyricWidget->label_lyric->adjustSize();
        //qDebug() << "label_after" << desktopLyric->ui->label_lyric->size();
        lyricWidget->resize(lyricWidget->label_lyric->size());
@@ -634,13 +638,13 @@ void MainWindow::chooseFontColor()
         lyricWidget->label_lyric->setPalette(plt);
         plt.setColor(QPalette::ButtonText, color);
         pushButton_fontcolor->setPalette(plt);
-        writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricFontColor", color.name());
+        settings.setValue("LyricFontColor", color.name());
     }
 }
 
 void MainWindow::chooseDownloadPath()
 {
-    downloadPath = QFileDialog::getExistingDirectory(this,"保存路径",downloadPath, QFileDialog::ShowDirsOnly |QFileDialog::DontResolveSymlinks);
+    downloadPath = QFileDialog::getExistingDirectory(this, "保存路径", downloadPath, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if(downloadPath != ""){
         QObject *object = sender();
         qDebug() << object->objectName() << downloadPath;
@@ -651,24 +655,8 @@ void MainWindow::chooseDownloadPath()
             pushButton_path->setText(downloadPath);
             pushButton_path->setToolTip(downloadPath);
         }
-        writeSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath", downloadPath);
+        settings.setValue("DownloadPath", downloadPath);
     }
-}
-
-QString MainWindow::readSettings(QString path, QString group, QString key)
-{
-    QSettings setting(path, QSettings::IniFormat);
-    setting.beginGroup(group);
-    QString value = setting.value(key).toString();
-    return value;
-}
-
-void MainWindow::writeSettings(QString path, QString group, QString key, QString value)
-{
-    QSettings *config = new QSettings(path, QSettings::IniFormat);
-    config->beginGroup(group);
-    config->setValue(key, value);
-    config->endGroup();
 }
 
 void MainWindow::playLast()
@@ -878,7 +866,7 @@ void MainWindow::dialogDownload()
     pushButton_path = new QPushButton;
     pushButton_path->setObjectName("DownloadDialogPath");
     pushButton_path->setFocusPolicy(Qt::NoFocus);
-    downloadPath = readSettings(QDir::currentPath() + "/config.ini", "config", "DownloadPath");
+    downloadPath = settings.value("DownloadPath").toString();
     pushButton_path->setText(downloadPath);
     pushButton_path->setToolTip(downloadPath);
     connect(pushButton_path, SIGNAL(pressed()), this, SLOT(chooseDownloadPath()));
