@@ -44,10 +44,7 @@ private:
         QString sentence;
     };
     QList<Lyric> lyrics;
-    QLineEdit *lineEdit_downloadPath;
     QString downloadPath;
-    QString readSettings(QString path, QString group, QString key);
-    void writeSettings(QString path, QString group, QString key, QString value);
     QPushButton *pushButton_font, *pushButton_fontcolor, *pushButton_path;
     QVideoWidget *videoWidget;
     void rankChineseNew();
@@ -72,10 +69,9 @@ private slots:
     void swapLyric();
     void hideLyric();
     void showHideLyric(bool);
-    void showSetDialog();
+    void dialogSet();
     void chooseFont();
     void chooseFontColor();
-    void chooseDownloadPath();
     void playLast();
     void playNext();
     void pushButtonMVClicked();
