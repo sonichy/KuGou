@@ -10,7 +10,7 @@ LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent),
 {
     resize(800,120);
 
-    setAttribute(Qt::WA_TranslucentBackground,true);
+    setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::WindowStaysOnTopHint);
     setWindowFlags(Qt::FramelessWindowHint);
     setWindowFlags(Qt::X11BypassWindowManagerHint);

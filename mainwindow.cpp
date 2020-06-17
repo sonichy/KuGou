@@ -205,7 +205,7 @@ MainWindow::MainWindow(QWidget *parent)
     QString sfont = settings.value("LyricFont").toString();
     if(sfont != ""){
         QStringList SLFont = sfont.split(",");
-        lyricWidget->label_lyric->setFont(QFont(SLFont.at(0),  SLFont.at(1).toInt(), SLFont.at(2).toInt(), SLFont.at(3).toInt()));
+        lyricWidget->label_lyric->setFont(QFont(SLFont.at(0), SLFont.at(1).toInt(), SLFont.at(2).toInt(), SLFont.at(3).toInt()));
     }
     lyricWidget->show();
 
