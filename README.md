@@ -1,15 +1,8 @@
 # Qt: 酷狗音乐
 一款基于 Qt5 的酷狗音乐播放器，已编译好的 KuGou 适用于 Linux 64 位 Qt5 环境。  
-软件界面和音乐版权归酷狗所有。
-### 功能规划：
-~~搜索播放歌曲~~
-~~MV~~  
-~~歌词~~
-
+软件界面和音乐版权归酷狗所有。  
 ![alt](preview.png)  
-
 ![alt](kugoumv.png)  
-
 ### 参考
 界面：酷狗音乐  
 API：https://github.com/ecitlm/Kugou-api  
