@@ -14,6 +14,8 @@
 #include <QVideoWidget>
 #include <QSettings>
 
+#define RANKID Qt::UserRole + 1
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -30,6 +32,7 @@ private:
     NavWidget *navWidget;
     QWidget *toplistWidget;
     QTabWidget *tabWidget, *repertory;
+    QListWidget *rankList;
     QTableWidget *tableWidget_songlist, *tableWidget_songlistrank;
     QTextBrowser *textBrowser;
     ControlBar *controlBar;
@@ -47,8 +50,8 @@ private:
     QString downloadPath;
     QPushButton *pushButton_font, *pushButton_fontcolor, *pushButton_path;
     QVideoWidget *videoWidget;
-    void rankChineseNew();
     QSettings settings;
+    void genRankList();
 
 private slots:
     void showNormalMaximize();

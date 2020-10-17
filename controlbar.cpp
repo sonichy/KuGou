@@ -14,7 +14,6 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
                   "QSlider::add-page:Horizontal { background-color: #6EAFE7; }"
                   "QSlider::groove:Horizontal { background: transparent; height:4px; }"
                   "QSlider::handle:Horizontal { width:13px; height:13px; border:1px solid #DEFFED; border-radius:7px; background:#DEFFED; margin: -5px 0px -5px 0px; }"
-                  "QToolTip{border-style:none; background-color:black;}"
                   "#pushButton_quality { border: 1px solid white; border-radius: 10px; }");
 
     setFixedHeight(70);
@@ -157,6 +156,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_fullscreen->setCursor(Qt::PointingHandCursor);
     //pushButton_fullscreen->setShortcut(QKeySequence::FullScreen);
     pushButton_fullscreen->setShortcut(Qt::Key_F11);
+    pushButton_fullscreen->setToolTip("全屏(F11)");
     hbox->addWidget(pushButton_fullscreen);
 
     setLayout(hbox);
