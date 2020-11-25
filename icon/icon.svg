@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="128" height="128" version="1.1" xmlns="http://www.w3.org/2000/svg">
-<rect x="0" y="0" width="128" height="128" rx="30" ry="30" fill="rgb(0,131,221)" stroke-width="0" stroke="rgb(0,0,0)"/>
+<rect x="0" y="0" width="128" height="128" rx="30" ry="30" fill="RGB(82,146,254)" stroke-width="0" stroke="rgb(0,0,0)"/>
 <circle cx="64" cy="64" r="50" stroke="white" stroke-width="5" fill="none"/>
 <text x="35" y="90" fill="white" font-size="70" font-family="Bitstream Vera Sans">
 	<tspan font-weight="bold" font-style="italic" fill="white">K</tspan>

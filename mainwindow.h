@@ -21,7 +21,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 protected:
@@ -29,11 +29,11 @@ protected:
 
 private:
     TitleBar *titleBar;
-    NavWidget *navWidget;
-    QWidget *toplistWidget;
-    QTabWidget *tabWidget, *repertory;
-    QListWidget *rankList;
-    QTableWidget *tableWidget_songlist, *tableWidget_songlistrank;
+    QStackedWidget *stackedWidget;
+    QWidget *toplistWidget, *widget_mymusic, *widget_discovery;
+    QTabWidget *tabWidget;
+    QListWidget *listWidget_mymusic, *listWidget_discovery, *listWidget_rank;
+    QTableWidget *tableWidget_songlist, *tableWidget_songlist_rank;
     QTextBrowser *textBrowser;
     ControlBar *controlBar;
     QMediaPlayer *player;

@@ -24,19 +24,21 @@
         <file>icon/normal.svg</file>
         <file>icon/set.svg</file>
         <file>icon/KU.svg</file>
-        <file>icon/DJ.svg</file>
-        <file>icon/N.svg</file>
         <file>icon/fire.svg</file>
-        <file>icon/euro.svg</file>
-        <file>icon/SouthKorea.svg</file>
-        <file>icon/华.svg</file>
-        <file>icon/乐人.png</file>
         <file>icon/hand.png</file>
-        <file>icon/5sing.png</file>
-        <file>icon/fanxing.png</file>
-        <file>icon/sakura.svg</file>
-        <file>icon/歌.svg</file>
-        <file>icon/粤.svg</file>
         <file>icon/fullscreen.svg</file>
+        <file>icon/man.svg</file>
+        <file>icon/music.svg</file>
+        <file>icon/rank.svg</file>
+        <file>icon/category.svg</file>
+        <file>icon/radio.svg</file>
+        <file>icon/songlist1.svg</file>
+        <file>icon/star.svg</file>
+        <file>icon/tab1.svg</file>
+        <file>icon/tab.svg</file>
+        <file>icon/recent.svg</file>
+        <file>icon/playlist1.svg</file>
+        <file>icon/computer.svg</file>
+        <file>icon/radio1.svg</file>
     </qresource>
 </RCC>

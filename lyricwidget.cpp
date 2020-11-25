@@ -73,8 +73,6 @@ void LyricWidget::mouseReleaseEvent(QMouseEvent *event)
     Q_UNUSED(event);
     isMouseLeftButtonPressed = false;
     setCursor(Qt::ArrowCursor);
-    //writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricX", QString::number(x()));
-    //writeSettings(QDir::currentPath() + "/config.ini", "config", "LyricY", QString::number(y()));
     settings.setValue("LyricX", x());
     settings.setValue("LyricY", y());
 }

@@ -26,29 +26,14 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     label_icon->setPixmap(QPixmap(":/icon/icon.svg").scaled(label_icon->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     hbox->addWidget(label_icon);
 
-    pushButton_login = new QPushButton("登录",this);
-    //pushButton_login->setObjectName("pushButtonLogin");
-    pushButton_login->setFixedSize(34,24);
-    pushButton_login->setFlat(true);
-    pushButton_login->setFocusPolicy(Qt::NoFocus);
-    pushButton_login->setCursor(Qt::PointingHandCursor);
-    pushButton_login->installEventFilter(this);
-    hbox->addWidget(pushButton_login);
-
-    QLabel *label = new QLabel;
-    label->setText("|");
-    label->setAlignment(Qt::AlignCenter);
-    label->setStyleSheet("color:white;");
-    hbox->addWidget(label);
-
-    pushButton_register = new QPushButton("注册",this);
-    //pushButton_register->setObjectName("pushButtonRegister");
-    pushButton_register->setFixedSize(34,24);
-    pushButton_register->setFlat(true);
-    pushButton_register->setFocusPolicy(Qt::NoFocus);
-    pushButton_register->setCursor(Qt::PointingHandCursor);
-    pushButton_register->installEventFilter(this);
-    hbox->addWidget(pushButton_register);
+//    pushButton_login = new QPushButton("登录",this);
+//    //pushButton_login->setObjectName("pushButtonLogin");
+//    pushButton_login->setFixedSize(45,24);
+//    pushButton_login->setFlat(true);
+//    pushButton_login->setFocusPolicy(Qt::NoFocus);
+//    pushButton_login->setCursor(Qt::PointingHandCursor);
+//    pushButton_login->installEventFilter(this);
+//    hbox->addWidget(pushButton_login);
 
     hbox->addStretch();
 
@@ -196,7 +181,7 @@ void TitleBar::about()
     label->setAlignment(Qt::AlignCenter);
     vbox->addWidget(label);
     label = new QLabel;
-    label->setText("酷狗音乐 V1.0");
+    label->setText("酷狗音乐 V2.0");
     label->setAlignment(Qt::AlignCenter);
     label->setStyleSheet("font-size:20px;");
     vbox->addWidget(label);
@@ -217,6 +202,6 @@ void TitleBar::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(Qt::NoPen);
-    painter.setBrush(QColor(0,131,221));
+    painter.setBrush(QColor(82,146,254));
     painter.drawRect(rect());
 }

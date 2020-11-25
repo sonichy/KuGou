@@ -1,7 +1,5 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="48" height="48" version="1.1" xmlns="http://www.w3.org/2000/svg">
-<circle cx="24" cy="24" r="22" stroke="none" stroke-width="1" fill="RGB(82,146,254)" />
-<polygon points="18,14 18,34 34,24" fill="white" stroke="white" stroke-width="3" stroke-linejoin="round"/>
+<path d="M20 20 a10 10 270 1 0 10 10 l0 -20 l15 0" stroke="RGB(82,146,254)" stroke-width="13" fill="none"/>
 </svg>
-
