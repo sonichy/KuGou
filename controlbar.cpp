@@ -53,18 +53,15 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     QHBoxLayout *hbox1 = new QHBoxLayout;
     label_song_timeNow = new QLabel;
     label_song_timeNow->setText("00:00");
-    //label_song_timeNow->setStyleSheet("color:white;");
     hbox1->addWidget(label_song_timeNow);
     QLabel *label = new QLabel("/");
     hbox1->addWidget(label);
     label_song_duration = new QLabel;
     label_song_duration->setText("00:00");
-    //label_song_duration->setStyleSheet("color:white;");
     hbox1->addWidget(label_song_duration);
     hbox1->addStretch();
     vbox1->addLayout(hbox1);
     widget->setLayout(vbox1);
-    //hbox->addLayout(vbox1);
     hbox->addWidget(widget);
 
     pushButton_love = new QPushButton;
@@ -74,6 +71,14 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_love->setFocusPolicy(Qt::NoFocus);
     pushButton_love->setFlat(true);
     pushButton_love->setCursor(Qt::PointingHandCursor);
+    pushButton_love->setCheckable(true);
+    pushButton_love->setStyleSheet("QPushButton:checked { border:none; }");
+    connect(pushButton_love, &QPushButton::toggled, [=](bool b){
+        if (b)
+            pushButton_love->setIcon(QIcon(":/icon/heart1.svg"));
+        else
+            pushButton_love->setIcon(QIcon(":/icon/heart.svg"));
+    });
     hbox->addWidget(pushButton_love);
 
     pushButton_download = new QPushButton;
@@ -162,17 +167,6 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_lyric->setCursor(Qt::PointingHandCursor);
     hbox->addWidget(pushButton_lyric);
 
-    pushButton_playlist = new QPushButton;
-    pushButton_playlist->setFixedSize(30,30);
-    pushButton_playlist->setIcon(QIcon(":/icon/playlist.svg"));
-    pushButton_playlist->setIconSize(QSize(25,25));
-    pushButton_playlist->setFocusPolicy(Qt::NoFocus);
-    pushButton_playlist->setFlat(true);
-    pushButton_playlist->setCheckable(true);
-    pushButton_playlist->setChecked(true);
-    pushButton_playlist->setCursor(Qt::PointingHandCursor);
-    hbox->addWidget(pushButton_playlist);   
-
     pushButton_fullscreen = new QPushButton;
     pushButton_fullscreen->setFixedSize(30,30);
     pushButton_fullscreen->setIcon(QIcon(":/icon/fullscreen.svg"));
@@ -180,7 +174,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
     pushButton_fullscreen->setFocusPolicy(Qt::NoFocus);
     pushButton_fullscreen->setFlat(true);
     pushButton_fullscreen->setCursor(Qt::PointingHandCursor);
-    //pushButton_fullscreen->setShortcut(QKeySequence::FullScreen);
+    //pushButton_fullscreen->setShortcut(QKeySequence::FullScreen); //不知道是哪个键
     pushButton_fullscreen->setShortcut(Qt::Key_F11);
     pushButton_fullscreen->setToolTip("全屏(F11)");
     hbox->addWidget(pushButton_fullscreen);

@@ -40,5 +40,6 @@
         <file>icon/playlist1.svg</file>
         <file>icon/computer.svg</file>
         <file>icon/radio1.svg</file>
+        <file>icon/heart1.svg</file>
     </qresource>
 </RCC>

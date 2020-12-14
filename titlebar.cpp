@@ -25,16 +25,6 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     label_icon->setFixedSize(40,40);
     label_icon->setPixmap(QPixmap(":/icon/icon.svg").scaled(label_icon->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     hbox->addWidget(label_icon);
-
-//    pushButton_login = new QPushButton("登录",this);
-//    //pushButton_login->setObjectName("pushButtonLogin");
-//    pushButton_login->setFixedSize(45,24);
-//    pushButton_login->setFlat(true);
-//    pushButton_login->setFocusPolicy(Qt::NoFocus);
-//    pushButton_login->setCursor(Qt::PointingHandCursor);
-//    pushButton_login->installEventFilter(this);
-//    hbox->addWidget(pushButton_login);
-
     hbox->addStretch();
 
     lineEdit_search = new QLineEdit;
@@ -186,7 +176,7 @@ void TitleBar::about()
     label->setStyleSheet("font-size:20px;");
     vbox->addWidget(label);
     label = new QLabel;
-    label->setText("         一款基于 Qt5 的酷狗音乐播放器。\n作者：海天鹰\nE-mail: sonichy@163.com\n项目地址：http://sonichy.github.com\n界面和音乐版权：酷狗\n参考：\nhttps://github.com/ecitlm/Kugou-api\nhttps://www.cnblogs.com/xuhui24/p/6555761.html");
+    label->setText("         一款基于 Qt5 的酷狗音乐播放器。\n作者：海天鹰\nE-mail: sonichy@163.com\n主页：https://github.com/sonichy\n界面和音乐版权：酷狗\n参考：\nhttps://github.com/ecitlm/Kugou-api\nhttps://www.cnblogs.com/xuhui24/p/6555761.html");
     label->setStyleSheet("font-size:15px;");
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignTop);
@@ -203,5 +193,5 @@ void TitleBar::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(Qt::NoPen);
     painter.setBrush(QColor(82,146,254));
-    painter.drawRect(rect());
+    painter.drawRect(rect());    
 }

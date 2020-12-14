@@ -27,8 +27,6 @@
 #include <QBitmap>
 #include <QDesktopServices>
 #include <QStackedWidget>
-#include <iostream>
-using namespace std;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -186,12 +184,13 @@ MainWindow::MainWindow(QWidget *parent)
     tableWidget_songlist_rank->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableWidget_songlist_rank->setSelectionMode(QAbstractItemView::SingleSelection);
     tableWidget_songlist_rank->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tableWidget_songlist_rank->setColumnCount(5);
+    tableWidget_songlist_rank->setColumnCount(6);
     QStringList headerRank;
-    headerRank << "歌名" << "时长" << "hash" << "mvhash" << "操作";
+    headerRank << "歌名" << "时长" << "hash" << "mvhash" << "album_id" << "MV";
     tableWidget_songlist_rank->setHorizontalHeaderLabels(headerRank);
     tableWidget_songlist_rank->setColumnHidden(2,true);
     tableWidget_songlist_rank->setColumnHidden(3,true);
+    tableWidget_songlist_rank->setColumnHidden(4,true);
     connect(tableWidget_songlist_rank, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(playSongRank(int,int)));
     stackedWidget->addWidget(tableWidget_songlist_rank);
 
@@ -199,11 +198,12 @@ MainWindow::MainWindow(QWidget *parent)
     tableWidget_songlist->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableWidget_songlist->setSelectionMode(QAbstractItemView::SingleSelection);
     tableWidget_songlist->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tableWidget_songlist->setColumnCount(7);
+    tableWidget_songlist->setColumnCount(8);
     tableWidget_songlist->setColumnHidden(4,true);
     tableWidget_songlist->setColumnHidden(5,true);
+    tableWidget_songlist->setColumnHidden(6,true);
     QStringList header;
-    header << "歌名" << "歌手" << "专辑" << "时长" << "hash" << "mvhash" << "MV";
+    header << "歌名" << "歌手" << "专辑" << "时长" << "hash" << "mvhash" << "album_id" << "MV";
     tableWidget_songlist->setHorizontalHeaderLabels(header);
 //    tableWidget_songlist->horizontalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");
 //    tableWidget_songlist->verticalHeader()->setStyleSheet("QHeaderView::section { color:white; background-color:#232326; }");
@@ -214,17 +214,26 @@ MainWindow::MainWindow(QWidget *parent)
     videoWidget = new QVideoWidget;
     tabWidget->addTab(videoWidget, "MV");    
 
-    //textBrowser = new QTextBrowser;
-    //textBrowser->zoomIn(10);
+    textBrowser = new QTextBrowser;
+    textBrowser->zoomIn(10);
+    tabWidget->addTab(textBrowser, "歌词");
 
     controlBar = new ControlBar;
+    connect(controlBar->pushButton_albumPic, &QPushButton::pressed, [=]{
+        tabWidget->setCurrentWidget(textBrowser);
+    });
     connect(controlBar->pushButton_last, SIGNAL(pressed()), this, SLOT(playLast()));
     connect(controlBar->pushButton_play, SIGNAL(pressed()), this, SLOT(playPause()));
     connect(controlBar->pushButton_next, SIGNAL(pressed()),this, SLOT(playNext()));
-    connect(controlBar->pushButton_songname, SIGNAL(pressed()), this, SLOT(swapLyric()));
     connect(controlBar->pushButton_mute, SIGNAL(pressed()), this, SLOT(mute()));
-    connect(controlBar->pushButton_lyric, SIGNAL(clicked(bool)), this, SLOT(showHideLyric(bool)));
-    connect(controlBar->pushButton_playlist, SIGNAL(clicked(bool)), this, SLOT(showHidePlayList(bool)));
+    connect(controlBar->pushButton_lyric, &QPushButton::toggled, [=](bool b){
+        if (b) {
+            lyricWidget->show();
+        } else {
+            lyricWidget->hide();
+        }
+        settings.setValue("isShowLyric", b);
+    });
     connect(controlBar->pushButton_download, SIGNAL(pressed()), this, SLOT(dialogDownload()));
     connect(controlBar->pushButton_fullscreen, SIGNAL(pressed()), this, SLOT(enterFullscreen()));
     connect(controlBar->slider_progress, SIGNAL(sliderReleased()), this, SLOT(setMPPosition()));
@@ -244,7 +253,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     lyricWidget = new LyricWidget;
     connect(lyricWidget->pushButton_set, SIGNAL(pressed()), this, SLOT(dialogSet()));
-    connect(lyricWidget->pushButton_close, SIGNAL(pressed()), this, SLOT(hideLyric()));
+    connect(lyricWidget->pushButton_close, &QPushButton::pressed, [=]{
+        controlBar->pushButton_lyric->toggled(false);
+        settings.setValue("isShowLyric", false);
+    });
     int lx = settings.value("LyricX").toInt();
     int ly = settings.value("LyricY").toInt();
     //qDebug() << lx << ly;
@@ -265,8 +277,6 @@ MainWindow::MainWindow(QWidget *parent)
     lyricWidget->show();
 
     bool isShowLyric = settings.value("isShowLyric").toBool();
-    qDebug() << "isShowLyric" << isShowLyric;
-    qWarning() << "isShowLyric" << isShowLyric;
     if (isShowLyric) {
         controlBar->pushButton_lyric->setChecked(true);
     } else {
@@ -275,7 +285,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     genRankList();
 
-    tabWidget->dumpObjectTree();
+    tabWidget->dumpObjectTree(); //?
+
+    // Cookie的kg_mid算法：https://blog.csdn.net/ychgyyn/article/details/90110296
+    QString key = genKey(4);
+    qWarning() << key;
+    //QString转MD5：https://blog.csdn.net/qq_33266987/article/details/80497595
+    kg_mid = QCryptographicHash::hash(key.toUtf8(), QCryptographicHash::Md5).toHex();
+    qWarning() << kg_mid;
+
+    dfid = "3KsyWK16LQQx15O2S526TQXX";
 }
 
 MainWindow::~MainWindow()
@@ -292,10 +311,7 @@ QByteArray MainWindow::getReply(QString surl)
     QNetworkAccessManager *NAM = new QNetworkAccessManager;
     QNetworkRequest request;
     request.setUrl(QUrl(surl));
-    // 播放音乐Cookie的kg_mid算法　https://blog.csdn.net/ychgyyn/article/details/90110296，随便写一个好像可以了。
-    if (surl.startsWith("http://www.kugou.com/yy/index.php?r=play/getdata&hash=")) {
-        request.setRawHeader("Cookie", "kg_mid=355721c2749fe30472161adf09b5748d");
-    }
+    //request.setRawHeader("Cookie", "kg_mid=" + kg_mid);
     QNetworkReply *reply = NAM->get(request);
     QEventLoop loop;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
@@ -334,16 +350,17 @@ void MainWindow::showNormalMaximize()
 void MainWindow::playSong(int row, int column)
 {
     Q_UNUSED(column);
+    controlBar->pushButton_love->toggled(false);
     QString hash = tableWidget_songlist->item(row,4)->text();
-    QString surl = "http://www.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
-    //QString surl = "https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
+    QString album_id = tableWidget_songlist->item(row,6)->text();
+    //QString surl = "http://www.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
+    QString surl = "https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + hash + "&mid=" + kg_mid + "&dfid=" + dfid + "&album_id=" + album_id;
     qWarning() << surl;
     QJsonDocument JD = QJsonDocument::fromJson(getReply(surl));
     QString songurl = JD.object().value("data").toObject().value("play_url").toString();
     player->setMedia(QUrl(songurl));
     player->play();
     QString songname = tableWidget_songlist->item(row,0)->text() + " - " + tableWidget_songlist->item(row,1)->text();
-    //navWidget->label_songname->setText(songname + "\n" + tableWidget_songlist->item(row,3)->text());
     controlBar->pushButton_songname->setText(songname);
     controlBar->pushButton_songname->setToolTip(songname);
     lyricWidget->label_lyric->setText(songname);
@@ -352,24 +369,25 @@ void MainWindow::playSong(int row, int column)
     if (imgurl != "") {
         QPixmap pixmap;
         pixmap.loadFromData(getReply(imgurl));
-        //navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
+        controlBar->pushButton_albumPic->setIcon(QIcon(pixmap.scaled(50,50,Qt::KeepAspectRatio,Qt::SmoothTransformation)));
         pixmap.save(QDir::currentPath() + "/cover.jpg");
-        //textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
-    } else {
-
+        textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
     }
 }
 
 void MainWindow::playSongRank(int row, int column)
 {
     Q_UNUSED(column);
-    QString hash = tableWidget_songlist_rank->item(row, 2)->text();
-    QString surl = "http://www.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
-    //QString surl = "https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
-    qDebug() << surl;
+    controlBar->pushButton_love->toggled(false);
+    QString hash = tableWidget_songlist_rank->item(row,2)->text();
+    QString album_id = tableWidget_songlist_rank->item(row,4)->text();
+    //QString surl = "http://www.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
+    //请求新增mid和dfid参数：https://my.oschina.net/u/4409146/blog/3306849
+    QString surl = "https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=" + hash + "&mid=" + kg_mid + "&dfid=" + dfid + "&album_id=" + album_id;
+    qWarning() << surl;
     QJsonDocument JD = QJsonDocument::fromJson(getReply(surl));
     QString songurl = JD.object().value("data").toObject().value("play_url").toString();
-    //qDebug() << json;
+    qWarning() << songurl;
     player->setMedia(QUrl(songurl));
     player->play();
     QString songname = tableWidget_songlist_rank->item(row,0)->text();
@@ -382,11 +400,9 @@ void MainWindow::playSongRank(int row, int column)
     if (imgurl != "") {
         QPixmap pixmap;
         pixmap.loadFromData(getReply(imgurl));
-        //navWidget->pushButton_albumPic->setIcon(QIcon(pixmap));
+        controlBar->pushButton_albumPic->setIcon(QIcon(pixmap.scaled(50,50,Qt::KeepAspectRatio,Qt::SmoothTransformation)));
         pixmap.save(QDir::currentPath() + "/cover.jpg");
-        //textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
-    }else{
-
+        textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
     }
 }
 
@@ -432,25 +448,25 @@ void MainWindow::positionChange(qint64 p)
     }
 
     // 歌词文本着色
-//    for (int a=0; a<lyrics.size(); a++) {
-//        QTextCursor cursor(textBrowser->document()->findBlockByLineNumber(a));
-//        QTextBlockFormat TBF = cursor.blockFormat();
-//        TBF.setForeground(QBrush(Qt::white));
-//        //TBF.setBackground(QBrush(Qt::transparent));
-//        TBF.clearBackground();
-//        cursor.setBlockFormat(TBF);
-//    }
-//    if(lyrics.size()>0){
-//        QTextCursor cursor1(textBrowser->document()->findBlockByLineNumber(hl));
-//        QTextBlockFormat TBF1 = cursor1.blockFormat();
-//        TBF1.setForeground(QBrush(Qt::green));
-//        TBF1.setBackground(QBrush(QColor(255,255,255,80)));
-//        cursor1.setBlockFormat(TBF1);
-//        //textBrowser->setTextCursor(cursor1);
-//        QScrollBar *scrollBar = textBrowser->verticalScrollBar();
-//        //qDebug() << "scrollBar" << scrollBar->maximum() << scrollBar->maximum()*hl/(lyrics.size()) ;
-//        scrollBar->setSliderPosition(scrollBar->maximum()*hl/(lyrics.size()));
-//    }
+    for (int a=0; a<lyrics.size(); a++) {
+        QTextCursor cursor(textBrowser->document()->findBlockByLineNumber(a));
+        QTextBlockFormat TBF = cursor.blockFormat();
+        TBF.setForeground(QBrush(Qt::white));
+        //TBF.setBackground(QBrush(Qt::transparent));
+        TBF.clearBackground();
+        cursor.setBlockFormat(TBF);
+    }
+    if(lyrics.size()>0){
+        QTextCursor cursor1(textBrowser->document()->findBlockByLineNumber(hl));
+        QTextBlockFormat TBF1 = cursor1.blockFormat();
+        TBF1.setForeground(QBrush(Qt::green));
+        TBF1.setBackground(QBrush(QColor(255,255,255,80)));
+        cursor1.setBlockFormat(TBF1);
+        //textBrowser->setTextCursor(cursor1);
+        QScrollBar *scrollBar = textBrowser->verticalScrollBar();
+        //qDebug() << "scrollBar" << scrollBar->maximum() << scrollBar->maximum()*hl/(lyrics.size()) ;
+        scrollBar->setSliderPosition(scrollBar->maximum()*hl/(lyrics.size()));
+    }
 }
 
 void MainWindow::volumeChange(int v)
@@ -524,8 +540,7 @@ void MainWindow::search()
         stackedWidget->setCurrentWidget(tableWidget_songlist);
         int pagesize = 20;
         QString surl = "http://mobilecdn.kugou.com/api/v3/search/song?format=json&keyword=" + titleBar->lineEdit_search->text() + "&page=" + QString::number(titleBar->lineEdit_page->text().toInt()) + "&pagesize=" + QString::number(pagesize) + "&showtype=1";
-        qDebug() << surl;
-        //qDebug() << postReply(surl,spost);        
+        qWarning() << surl;
         tableWidget_songlist->setRowCount(0);
         QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
         QJsonArray songs = json.object().value("data").toObject().value("info").toArray();
@@ -542,6 +557,8 @@ void MainWindow::search()
             tableWidget_songlist->setItem(i,4,new QTableWidgetItem(songs[i].toObject().value("hash").toString()));
             QString mvhash = songs[i].toObject().value("mvhash").toString();
             tableWidget_songlist->setItem(i,5,new QTableWidgetItem(mvhash));
+            QString album_id = songs[i].toObject().value("album_id").toString();
+            tableWidget_songlist->setItem(i,6,new QTableWidgetItem(album_id));
             if (mvhash != "") {
                 QPushButton *pushButton_MV = new QPushButton;
                 pushButton_MV->setFixedSize(24,24);
@@ -551,7 +568,7 @@ void MainWindow::search()
                 pushButton_MV->setFlat(true);
                 pushButton_MV->setCursor(QCursor(Qt::PointingHandCursor));
                 connect(pushButton_MV, SIGNAL(clicked()), this, SLOT(pushButtonMVClicked()));
-                tableWidget_songlist->setCellWidget(i,6,pushButton_MV);
+                tableWidget_songlist->setCellWidget(i,7,pushButton_MV);
             }
         }
         tableWidget_songlist->resizeColumnsToContents();
@@ -578,7 +595,7 @@ void MainWindow::nextPage()
 
 void MainWindow::setLyric(QString s)
 {
-    //textBrowser->setText("");
+    textBrowser->setText("");
     lyrics.clear();
     QStringList line = s.split("\n");
     for(int i=0; i<line.size(); i++){
@@ -594,42 +611,14 @@ void MainWindow::setLyric(QString s)
             lyrics.append(lyric);
         }
     }
-    //for(int i=0; i<lyrics.size(); i++){
-        //textBrowser->insertPlainText(lyrics.at(i).sentence + "\n");
-    //}
-    //textBrowser->selectAll();
-    //textBrowser->setAlignment(Qt::AlignCenter);
-    //QTextCursor cursor = textBrowser->textCursor();
-    //cursor.setPosition(0, QTextCursor::MoveAnchor);
-    //textBrowser->setTextCursor(cursor);
-}
-
-void MainWindow::swapLyric()
-{
-    if (tabWidget->currentIndex() != 6) {
-        tabIndex = tabWidget->currentIndex();
-        tabWidget->setCurrentIndex(6);
-    } else {
-        tabWidget->setCurrentIndex(tabIndex);
+    for(int i=0; i<lyrics.size(); i++){
+        textBrowser->insertPlainText(lyrics.at(i).sentence + "\n");
     }
-}
-
-void MainWindow::hideLyric()
-{
-    lyricWidget->hide();
-    controlBar->pushButton_lyric->setChecked(false);
-    settings.setValue("isShowLyric", false);
-}
-
-void MainWindow::showHideLyric(bool b)
-{
-    if (b) {
-        lyricWidget->show();
-        //qDebug() << lyricWidget->x() << lyricWidget->y();
-    } else {
-        lyricWidget->hide();
-    }
-    settings.setValue("isShowLyric", b);
+    textBrowser->selectAll();
+    textBrowser->setAlignment(Qt::AlignCenter);
+    QTextCursor cursor = textBrowser->textCursor();
+    cursor.setPosition(0, QTextCursor::MoveAnchor);
+    textBrowser->setTextCursor(cursor);
 }
 
 void MainWindow::dialogSet()
@@ -666,16 +655,15 @@ void MainWindow::dialogSet()
     QPushButton *pushbutton_openpath = new QPushButton("保存路径");
     pushbutton_openpath->setStyleSheet("border:none;");
     connect(pushbutton_openpath, &QPushButton::clicked, [=](){
-         QDesktopServices::openUrl(QUrl(downloadPath));
+         QDesktopServices::openUrl(QUrl::fromLocalFile(downloadPath));
     });
     hbox->addWidget(pushbutton_openpath);
 
     QLineEdit *lineEdit_downloadPath = new QLineEdit;
-    if(downloadPath == ""){
+    if (downloadPath == "")
         lineEdit_downloadPath->setText(QStandardPaths::writableLocation(QStandardPaths::MusicLocation));
-    }else{
-        lineEdit_downloadPath->setText(downloadPath);
-    }
+    else
+        lineEdit_downloadPath->setText(downloadPath);    
     QAction *action_chooseDownloadPath = new QAction(this);
     action_chooseDownloadPath->setIcon(QIcon::fromTheme("folder"));
     connect(action_chooseDownloadPath, &QAction::triggered, [=](){
@@ -778,6 +766,8 @@ void MainWindow::playNext()
 
 void MainWindow::pushButtonMVClicked()
 {
+    textBrowser->setText("");
+    lyrics.clear();
     QPushButton *pushButton = qobject_cast<QPushButton*>(sender());
     if (pushButton == nullptr) {
         return;
@@ -786,32 +776,39 @@ void MainWindow::pushButtonMVClicked()
     int row = index.row();
     tableWidget_songlist->setCurrentCell(row,0);
     QString songname = tableWidget_songlist->item(row,0)->text() + " - " + tableWidget_songlist->item(row,1)->text();
-    //navWidget->label_songname->setText(songname + "\n" + tableWidget_songlist->item(row,3)->text());
     controlBar->pushButton_songname->setText(songname);
     controlBar->pushButton_songname->setToolTip(songname);
     QString mvhash = tableWidget_songlist->item(row,5)->text();
     QString surl = "http://m.kugou.com/app/i/mv.php?cmd=100&ismp3=1&ext=mp4&hash=" + mvhash;
-    qDebug() << surl;
-    QJsonDocument json = QJsonDocument::fromJson(getReply(surl));
-    QString mvurl = json.object().value("mvdata").toObject().value("rq").toObject().value("downurl").toString();
+    qWarning() << surl;
+    QJsonDocument JD = QJsonDocument::fromJson(getReply(surl));
+    QString mvurl = JD.object().value("mvdata").toObject().value("rq").toObject().value("downurl").toString();
     if (mvurl == "") {
-        mvurl = json.object().value("mvdata").toObject().value("sq").toObject().value("downurl").toString();
+        mvurl = JD.object().value("mvdata").toObject().value("sq").toObject().value("downurl").toString();
     }
     if (mvurl == "") {
-        mvurl = json.object().value("mvdata").toObject().value("le").toObject().value("downurl").toString();
+        mvurl = JD.object().value("mvdata").toObject().value("le").toObject().value("downurl").toString();
     }
-    qDebug() << mvurl;
-    lyricWidget->hide();
-    //navWidget->hide();
-    controlBar->pushButton_lyric->setChecked(false);
-    controlBar->pushButton_playlist->setChecked(false);
+    qWarning() << mvurl;
+    controlBar->pushButton_lyric->toggled(false);
     tabWidget->setCurrentWidget(videoWidget);
     player->setMedia(QUrl(mvurl));
     player->play();
+    QString mvicon = JD.object().value("mvicon").toString().replace("/{size}/","/");
+    qWarning() << mvicon;
+    if (mvicon != "") {
+        QPixmap pixmap;
+        pixmap.loadFromData(getReply(mvicon));
+        controlBar->pushButton_albumPic->setIcon(QIcon(pixmap.scaled(50,50,Qt::KeepAspectRatio,Qt::SmoothTransformation)));
+        pixmap.save(QDir::currentPath() + "/cover.jpg");
+        textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
+    }
 }
 
 void MainWindow::rankPushButtonMVClicked()
 {
+    textBrowser->setText("");
+    lyrics.clear();
     QPushButton *pushButton = qobject_cast<QPushButton*>(sender());
     if (pushButton == nullptr) {
         return;
@@ -834,22 +831,24 @@ void MainWindow::rankPushButtonMVClicked()
         mvurl = JD.object().value("mvdata").toObject().value("le").toObject().value("downurl").toString();
     }
     qDebug() << mvurl;
-    lyricWidget->hide();
-    controlBar->pushButton_lyric->setChecked(false);
-    controlBar->pushButton_playlist->setChecked(false);
+    controlBar->pushButton_lyric->toggled(false);
     tabWidget->setCurrentWidget(videoWidget);
     player->setMedia(QUrl(mvurl));
     player->play();
-}
-
-void MainWindow::showHidePlayList(bool b)
-{
-    //navWidget->setVisible(b);
+    QString mvicon = JD.object().value("mvicon").toString().replace("/{size}/","/");
+    qWarning() << mvicon;
+    if (mvicon != "") {
+        QPixmap pixmap;
+        pixmap.loadFromData(getReply(mvicon));
+        controlBar->pushButton_albumPic->setIcon(QIcon(pixmap.scaled(50,50,Qt::KeepAspectRatio,Qt::SmoothTransformation)));
+        pixmap.save(QDir::currentPath() + "/cover.jpg");
+        textBrowser->setStyleSheet("QTextBrowser{color:white; border-image:url(cover.jpg);}");
+    }
 }
 
 void MainWindow::enterFullscreen()
 {
-    if (tabWidget->currentWidget() == videoWidget) {
+    if (tabWidget->currentWidget() == videoWidget || tabWidget->currentWidget() == textBrowser) {
         showFullScreen();
         titleBar->hide();
         controlBar->hide();
@@ -919,7 +918,7 @@ void MainWindow::dialogDownload()
     gridLayout->addWidget(lineEdit_downloadPath1,2,1,1,1);
 
     connect(pushbutton_openpath, &QPushButton::clicked, [=](){
-         QDesktopServices::openUrl(QUrl(downloadPath));
+         QDesktopServices::openUrl(QUrl::fromLocalFile(downloadPath));
     });
     dialog->setLayout(gridLayout);
     QHBoxLayout *hbox = new QHBoxLayout;
@@ -991,11 +990,10 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     painter.setRenderHint(QPainter::Antialiasing, true);  //无效
     painter.setPen(Qt::NoPen);
     painter.setBrush(Qt::black);
-    if(isFullScreen()){
+    if (isFullScreen())
         painter.drawRect(bitmap.rect());
-    }else{
+    else
         painter.drawRoundedRect(bitmap.rect(),10,10);
-    }
     setMask(bitmap);
 }
 
@@ -1029,7 +1027,7 @@ void MainWindow::rankListItemClick(QListWidgetItem *item)
     tableWidget_songlist_rank->setRowCount(0);
     int rankid = item->data(RANKID).toInt();
     QString surl = QString("http://m.kugou.com/rank/info/?rankid=%1&page=1&json=true").arg(rankid);
-    qDebug() << surl;
+    qWarning() << surl;
     QJsonDocument JD = QJsonDocument::fromJson(getReply(surl));
     QJsonArray JA_list = JD.object().value("songs").toObject().value("list").toArray();
     for(int i=0; i<JA_list.size(); i++){
@@ -1042,6 +1040,8 @@ void MainWindow::rankListItemClick(QListWidgetItem *item)
         tableWidget_songlist_rank->setItem(i, 2, new QTableWidgetItem(JA_list[i].toObject().value("hash").toString()));
         QString mvhash = JA_list[i].toObject().value("mvhash").toString();
         tableWidget_songlist_rank->setItem(i, 3, new QTableWidgetItem(mvhash));
+        QString album_id = JA_list[i].toObject().value("album_id").toString();
+        tableWidget_songlist_rank->setItem(i, 4, new QTableWidgetItem(album_id));
         if (mvhash != "") {
             QPushButton *pushButton_MV = new QPushButton;
             pushButton_MV->setFixedSize(24,24);
@@ -1051,8 +1051,20 @@ void MainWindow::rankListItemClick(QListWidgetItem *item)
             pushButton_MV->setFlat(true);
             pushButton_MV->setCursor(QCursor(Qt::PointingHandCursor));
             connect(pushButton_MV, SIGNAL(clicked()), this, SLOT(rankPushButtonMVClicked()));
-            tableWidget_songlist_rank->setCellWidget(i, 4, pushButton_MV);
+            tableWidget_songlist_rank->setCellWidget(i, 5, pushButton_MV);
         }
     }
     tableWidget_songlist_rank->resizeColumnsToContents();
+}
+
+QString MainWindow::genKey(int count)
+{
+    char s[] = {"abcdefghijklmnopqrstuvwxyz0123456789"};
+    QString key = "";
+    qsrand(static_cast<uint>(clock()));
+    for(int i=0; i<count; i++){
+        int n = qrand() % static_cast<int>(strlen(s));
+        key += QString(s[n]);
+    }
+    return key;
 }

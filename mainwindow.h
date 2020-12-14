@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include "titlebar.h"
-#include "navwidget.h"
 #include "controlbar.h"
 #include "lyricwidget.h"
 #include <QMainWindow>
@@ -13,6 +12,7 @@
 #include <QTime>
 #include <QVideoWidget>
 #include <QSettings>
+#include <QListWidget>
 
 #define RANKID Qt::UserRole + 1
 
@@ -52,6 +52,9 @@ private:
     QVideoWidget *videoWidget;
     QSettings settings;
     void genRankList();
+    QString genKey(int count);
+    QByteArray kg_mid;
+    QString dfid;
 
 private slots:
     void showNormalMaximize();
@@ -69,9 +72,6 @@ private slots:
     void search();
     void lastPage();
     void nextPage();
-    void swapLyric();
-    void hideLyric();
-    void showHideLyric(bool);
     void dialogSet();
     void chooseFont();
     void chooseFontColor();
@@ -79,7 +79,6 @@ private slots:
     void playNext();
     void pushButtonMVClicked();
     void rankPushButtonMVClicked();
-    void showHidePlayList(bool b);
     void rankListItemClick(QListWidgetItem *item);
     void playSongRank(int row, int column);
     void enterFullscreen();
