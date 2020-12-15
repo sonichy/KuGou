@@ -32,8 +32,9 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
     lineEdit_search->setPlaceholderText("搜索音乐、歌手、歌词、用户");
     lineEdit_search->setFixedWidth(200);
     action_search = new QAction(this);
-    action_search->setIcon(QIcon(":/icon/search.svg"));
-    lineEdit_search->addAction(action_search,QLineEdit::TrailingPosition);
+    //action_search->setIcon(QIcon(":/icon/search.svg"));
+    action_search->setIcon(QIcon::fromTheme("search"));
+    lineEdit_search->addAction(action_search, QLineEdit::TrailingPosition);
     hbox->addWidget(lineEdit_search);
 
     pushButton_lastPage = new QPushButton;
@@ -167,7 +168,7 @@ void TitleBar::about()
     dialog->setFixedSize(500,350);
     QVBoxLayout *vbox = new QVBoxLayout;
     QLabel *label = new QLabel;
-    label->setPixmap(QPixmap(":/icon/icon.svg").scaled(90,90,Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation));
+    label->setPixmap(QPixmap(":/icon/icon.svg").scaled(90, 90, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     label->setAlignment(Qt::AlignCenter);
     vbox->addWidget(label);
     label = new QLabel;

@@ -4,5 +4,5 @@
 <line x1="3" y1="8" x2="22" y2="8" stroke="RGB(51,51,51)" stroke-width="1" />
 <line x1="3" y1="16" x2="16" y2="16" stroke="RGB(51,51,51)" stroke-width="1" />
 <line x1="3" y1="24" x2="8" y2="24" stroke="RGB(51,51,51)" stroke-width="1" />
-<path d="M20 20 a3 3 360 1 0 1 1 l0 -15 l5 5" stroke="RGB(51,51,51)" stroke-width="1" fill="none"/>
+<path d="M20 20 a3 3 360 1 0 1 1 l0 -15 l5 5" stroke="rgb(51,51,51)" stroke-width="1" fill="none"/>
 </svg>

@@ -14,7 +14,8 @@
 #include <QSettings>
 #include <QListWidget>
 
-#define RANKID Qt::UserRole + 1
+#define RANK_ID Qt::UserRole + 1
+#define RANK_IMGURL Qt::UserRole + 2
 
 class MainWindow : public QMainWindow
 {
@@ -55,6 +56,7 @@ private:
     QString genKey(int count);
     QByteArray kg_mid;
     QString dfid;
+    void getRankImage(QListWidgetItem *LWI);
 
 private slots:
     void showNormalMaximize();

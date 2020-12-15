@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "toplistitem.h"
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QVBoxLayout>
@@ -30,13 +29,13 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-    settings(QCoreApplication::organizationName(), QCoreApplication::applicationName())
+    settings(QApplication::organizationName(), QApplication::applicationName())
 {
     setWindowIcon(QIcon(":/icon/icon.svg"));
     setWindowFlags(Qt::FramelessWindowHint);
     resize(1000,700);
 
-    move((QApplication::desktop()->width()-width())/2,(QApplication::desktop()->height()-height())/2);
+    move((QApplication::desktop()->width() - width()) / 2, (QApplication::desktop()->height() - height()) / 2);
     setStyleSheet("QPushButton:hover { background:rgba(0,131,221,50); }"
                   "QTabWidget { background:rgb(82,146,254); }"
                   "QTabWidget::pane { border:0px; }"    //内部边框
@@ -169,8 +168,10 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     listWidget_rank = new QListWidget;
-    //listWidget_rank->setViewMode(QListView::IconMode);
-    listWidget_rank->setIconSize(QSize(100,100));
+    listWidget_rank->setViewMode(QListView::IconMode);
+    listWidget_rank->setGridSize(QSize(200,200));
+    listWidget_rank->setIconSize(QSize(150,150));
+    listWidget_rank->setResizeMode(QListView::Adjust);
     connect(listWidget_rank, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(rankListItemClick(QListWidgetItem*)));
 
     stackedWidget = new QStackedWidget;
@@ -283,6 +284,7 @@ MainWindow::MainWindow(QWidget *parent)
         lyricWidget->hide();
     }
 
+    tabWidget->setCurrentWidget(widget_discovery);
     genRankList();
 
     tabWidget->dumpObjectTree(); //?
@@ -1014,9 +1016,15 @@ void MainWindow::genRankList()
     QJsonDocument JD = QJsonDocument::fromJson(getReply(surl));
     QJsonArray JA_list = JD.object().value("rank").toObject().value("list").toArray();
     for (int i=0; i<JA_list.size(); i++) {
-        QListWidgetItem *LWI = new QListWidgetItem(QIcon(":/icon/KU.svg"), JA_list[i].toObject().value("rankname").toString());
-        LWI->setData(RANKID, JA_list[i].toObject().value("rankid").toInt());
+        int rankid = JA_list[i].toObject().value("rankid").toInt();
+        QString rankname = JA_list[i].toObject().value("rankname").toString();
+        QString imgurl = JA_list[i].toObject().value("imgurl").toString().replace("/{size}/","/");
+        QListWidgetItem *LWI = new QListWidgetItem(QIcon(":/icon/KU.svg"), "");
+        //LWI->setToolTip(rankname);
+        LWI->setData(RANK_ID, rankid);
+        LWI->setData(RANK_IMGURL, imgurl);
         listWidget_rank->addItem(LWI);
+        getRankImage(LWI);
     }    
 }
 
@@ -1025,7 +1033,7 @@ void MainWindow::rankListItemClick(QListWidgetItem *item)
     listWidget_discovery->setCurrentRow(-1);
     stackedWidget->setCurrentWidget(tableWidget_songlist_rank);
     tableWidget_songlist_rank->setRowCount(0);
-    int rankid = item->data(RANKID).toInt();
+    int rankid = item->data(RANK_ID).toInt();
     QString surl = QString("http://m.kugou.com/rank/info/?rankid=%1&page=1&json=true").arg(rankid);
     qWarning() << surl;
     QJsonDocument JD = QJsonDocument::fromJson(getReply(surl));
@@ -1067,4 +1075,21 @@ QString MainWindow::genKey(int count)
         key += QString(s[n]);
     }
     return key;
+}
+
+void MainWindow::getRankImage(QListWidgetItem *LWI)
+{
+    QString surl = LWI->data(RANK_IMGURL).toString();
+    //qWarning() << surl;
+    QNetworkAccessManager *NAM = new QNetworkAccessManager;
+    QNetworkRequest request;
+    request.setUrl(QUrl(surl));
+    QNetworkReply *reply = NAM->get(request);
+    connect(reply, &QNetworkReply::finished, [=]{
+        QPixmap pixmap;
+        pixmap.loadFromData(reply->readAll());
+        pixmap = pixmap.scaled(150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        if (LWI)
+            LWI->setIcon(QIcon(pixmap));
+    });
 }

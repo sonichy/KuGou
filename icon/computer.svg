@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-<rect x="3" y="5" width="26" height="18" rx="2" ry="2" stroke-width="1" stroke="RGB(51,51,51)" fill="none"/>
-<line x1="16" y1="23" x2="16" y2="28" stroke="RGB(51,51,51)" stroke-width="1"/>
-<line x1="8" y1="28" x2="24" y2="28" stroke="RGB(51,51,51)" stroke-width="1"/>
+<rect x="3" y="5" width="26" height="18" rx="2" ry="2" stroke-width="1" stroke="rgb(51,51,51)" fill="none"/>
+<line x1="16" y1="23" x2="16" y2="28" stroke="rgb(51,51,51)" stroke-width="1"/>
+<line x1="8" y1="28" x2="24" y2="28" stroke="rgb(51,51,51)" stroke-width="1"/>
 </svg>

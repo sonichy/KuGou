@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="150" height="30" version="1.1" xmlns="http://www.w3.org/2000/svg">
-<path d="M0 30 L10 10 C13 5 15 0 20 0 L130 0 C135 0 137 5 140 10 L150 30 Z" fill="RGB(185,211,255)"/>
+<path d="M0 30 L10 10 C13 5 15 0 20 0 L130 0 C135 0 137 5 140 10 L150 30 Z" fill="rgb(185,211,255)"/>
 </svg>

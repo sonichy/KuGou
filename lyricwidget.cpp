@@ -3,10 +3,10 @@
 #include <QHBoxLayout>
 #include <QDir>
 #include <QSettings>
-#include <QCoreApplication>
+#include <QApplication>
 
 LyricWidget::LyricWidget(QWidget *parent) : QWidget(parent),
-    settings(QCoreApplication::organizationName(), QCoreApplication::applicationName())
+    settings(QApplication::organizationName(), QApplication::applicationName())
 {
     resize(800,120);
 

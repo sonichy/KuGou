@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-<line x1="16" y1="3" x2="16" y2="22" stroke="RGB(110,111,113)" stroke-width="2"/>
-<polyline points="7,13 16,22 25,13" stroke="RGB(110,111,113)" stroke-width="2" fill="none"/>
-<polyline points="3,20 3,30 30,30 30,20" stroke="RGB(110,111,113)" stroke-width="2" fill="none"/>
+<line x1="16" y1="3" x2="16" y2="22" stroke="rgb(110,111,113)" stroke-width="2"/>
+<polyline points="7,13 16,22 25,13" stroke="rgb(110,111,113)" stroke-width="2" fill="none"/>
+<polyline points="3,20 3,30 30,30 30,20" stroke="rgb(110,111,113)" stroke-width="2" fill="none"/>
 </svg>

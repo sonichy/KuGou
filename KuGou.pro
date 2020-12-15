@@ -10,14 +10,12 @@ SOURCES += \
         mainwindow.cpp \
     titlebar.cpp \
     controlbar.cpp \
-    toplistitem.cpp \
     lyricwidget.cpp
 
 HEADERS += \
         mainwindow.h \
     titlebar.h \
     controlbar.h \
-    toplistitem.h \
     lyricwidget.h
 
 RESOURCES += \

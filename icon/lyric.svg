@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-<text x="3" y="26" fill="RGB(110,111,113)" font-size="25">词</text>
+<text x="3" y="26" fill="rgb(110,111,113)" font-size="25">词</text>
 </svg>
