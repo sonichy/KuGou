@@ -3,7 +3,6 @@
         <file>icon/minimize.svg</file>
         <file>icon/maximize.svg</file>
         <file>icon/close.svg</file>
-        <file>icon/icon.svg</file>
         <file>icon/play.svg</file>
         <file>icon/next.svg</file>
         <file>icon/last.svg</file>
@@ -39,5 +38,6 @@
         <file>icon/computer.svg</file>
         <file>icon/radio1.svg</file>
         <file>icon/heart1.svg</file>
+        <file>icon/KuGou.svg</file>
     </qresource>
 </RCC>

@@ -15,7 +15,8 @@
 #include <QListWidget>
 
 #define RANK_ID Qt::UserRole + 1
-#define RANK_IMGURL Qt::UserRole + 2
+#define RANK_NAME Qt::UserRole + 2
+#define RANK_IMGURL Qt::UserRole + 3
 
 class MainWindow : public QMainWindow
 {
@@ -31,7 +32,7 @@ protected:
 private:
     TitleBar *titleBar;
     QStackedWidget *stackedWidget;
-    QWidget *toplistWidget, *widget_mymusic, *widget_discovery;
+    QWidget *widget_mymusic, *widget_discovery, *widget_songrank;//*toplistWidget,
     QTabWidget *tabWidget;
     QListWidget *listWidget_mymusic, *listWidget_discovery, *listWidget_rank;
     QTableWidget *tableWidget_songlist, *tableWidget_songlist_rank;
@@ -56,6 +57,7 @@ private:
     QString genKey(int count);
     QByteArray kg_mid;
     QString dfid;
+    QLabel *label_rankimg, *label_rankname;
     void getRankImage(QListWidgetItem *LWI);
 
 private slots:
@@ -81,7 +83,7 @@ private slots:
     void playNext();
     void pushButtonMVClicked();
     void rankPushButtonMVClicked();
-    void rankListItemClick(QListWidgetItem *item);
+    void rankListItemClick(QListWidgetItem *LWI);
     void playSongRank(int row, int column);
     void enterFullscreen();
     void exitFullscreen();

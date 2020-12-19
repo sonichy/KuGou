@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
                   "QTabWidget::pane { border:0px; }"    //内部边框
                   //"QTabWidget::tab-bar { background-color:rgb(82,146,254); }"
                   "QTabBar { background:rgb(82,146,254); }"
-                  "QTabBar:tab { width:150px; height:30px; }"
+                  "QTabBar:tab { width:155px; height:30px; }"
                   "QTabBar::tab:selected { color:rgb(82,146,254); background:rgb(82,146,254); border-image: url(:/icon/tab.svg); }"
                   "QTabBar::tab:!selected { background:rgb(82,146,254); border-image: url(:/icon/tab1.svg); }"
                   );
@@ -69,20 +69,42 @@ MainWindow::MainWindow(QWidget *parent)
     vbox->addWidget(titleBar);
 
     tabWidget = new QTabWidget;
-    //tabWidget->setObjectName("tabWidget");
     tabWidget->setTabShape(QTabWidget::Triangular);
     tabWidget->setAutoFillBackground(true);
     vbox->addWidget(tabWidget);
 
+    controlBar = new ControlBar;
+    connect(controlBar->pushButton_albumPic, &QPushButton::pressed, [=]{
+        tabWidget->setCurrentWidget(textBrowser);
+    });
+    connect(controlBar->pushButton_last, SIGNAL(pressed()), this, SLOT(playLast()));
+    connect(controlBar->pushButton_play, SIGNAL(pressed()), this, SLOT(playPause()));
+    connect(controlBar->pushButton_next, SIGNAL(pressed()),this, SLOT(playNext()));
+    connect(controlBar->pushButton_mute, SIGNAL(pressed()), this, SLOT(mute()));
+    connect(controlBar->pushButton_lyric, &QPushButton::toggled, [=](bool b){
+        if (b) {
+            lyricWidget->show();
+        } else {
+            lyricWidget->hide();
+        }
+        settings.setValue("isShowLyric", b);
+    });
+    connect(controlBar->pushButton_download, SIGNAL(pressed()), this, SLOT(dialogDownload()));
+    connect(controlBar->pushButton_fullscreen, SIGNAL(pressed()), this, SLOT(enterFullscreen()));
+    connect(controlBar->slider_progress, SIGNAL(sliderReleased()), this, SLOT(setMPPosition()));
+    connect(controlBar->slider_volume, SIGNAL(sliderReleased()), this, SLOT(setVolume()));
+    //connect(controlBar->comboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(changeQuality(QString)));
+    vbox->addWidget(controlBar);
+
     //我的音乐页面
     widget_mymusic = new QWidget;
     QHBoxLayout *hbox = new QHBoxLayout;
-    hbox->setSpacing(0);
     hbox->setContentsMargins(0,0,0,0);
+    hbox->setSpacing(0);
     widget_mymusic->setLayout(hbox);
 
     listWidget_mymusic = new QListWidget;
-    listWidget_mymusic->setFixedWidth(150);
+    listWidget_mymusic->setFixedWidth(155);
     listWidget_mymusic->setSpacing(2);
     QListWidgetItem *LWI;
     QSize size(130,35);
@@ -119,7 +141,7 @@ MainWindow::MainWindow(QWidget *parent)
     widget_discovery->setLayout(hbox);
 
     listWidget_discovery = new QListWidget;
-    listWidget_discovery->setFixedWidth(150);
+    listWidget_discovery->setFixedWidth(155);
     listWidget_discovery->setSpacing(10);
     LWI = new QListWidgetItem(QIcon(":/icon/music.svg"), "推荐");
     //LWI->setTextAlignment(Qt::AlignCenter);
@@ -181,6 +203,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     tabWidget->addTab(widget_discovery, QIcon(":/icon/music.svg"), "发现");
 
+    widget_songrank = new QWidget;
+    vbox = new QVBoxLayout;
+    vbox->setContentsMargins(0,0,0,0);
+    hbox = new QHBoxLayout;
+    label_rankimg = new QLabel;
+    label_rankimg->setFixedSize(100,100);
+    hbox->addWidget(label_rankimg);
+    label_rankname = new QLabel;
+    QFont font;
+    font.setPointSize(15);
+    font.setBold(true);
+    label_rankname->setFont(font);
+    hbox->addWidget(label_rankname);
+    vbox->addLayout(hbox);
+
     tableWidget_songlist_rank = new QTableWidget;
     tableWidget_songlist_rank->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableWidget_songlist_rank->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -193,7 +230,9 @@ MainWindow::MainWindow(QWidget *parent)
     tableWidget_songlist_rank->setColumnHidden(3,true);
     tableWidget_songlist_rank->setColumnHidden(4,true);
     connect(tableWidget_songlist_rank, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(playSongRank(int,int)));
-    stackedWidget->addWidget(tableWidget_songlist_rank);
+    vbox->addWidget(tableWidget_songlist_rank);
+    widget_songrank->setLayout(vbox);
+    stackedWidget->addWidget(widget_songrank);
 
     tableWidget_songlist = new QTableWidget;
     tableWidget_songlist->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -218,29 +257,6 @@ MainWindow::MainWindow(QWidget *parent)
     textBrowser = new QTextBrowser;
     textBrowser->zoomIn(10);
     tabWidget->addTab(textBrowser, "歌词");
-
-    controlBar = new ControlBar;
-    connect(controlBar->pushButton_albumPic, &QPushButton::pressed, [=]{
-        tabWidget->setCurrentWidget(textBrowser);
-    });
-    connect(controlBar->pushButton_last, SIGNAL(pressed()), this, SLOT(playLast()));
-    connect(controlBar->pushButton_play, SIGNAL(pressed()), this, SLOT(playPause()));
-    connect(controlBar->pushButton_next, SIGNAL(pressed()),this, SLOT(playNext()));
-    connect(controlBar->pushButton_mute, SIGNAL(pressed()), this, SLOT(mute()));
-    connect(controlBar->pushButton_lyric, &QPushButton::toggled, [=](bool b){
-        if (b) {
-            lyricWidget->show();
-        } else {
-            lyricWidget->hide();
-        }
-        settings.setValue("isShowLyric", b);
-    });
-    connect(controlBar->pushButton_download, SIGNAL(pressed()), this, SLOT(dialogDownload()));
-    connect(controlBar->pushButton_fullscreen, SIGNAL(pressed()), this, SLOT(enterFullscreen()));
-    connect(controlBar->slider_progress, SIGNAL(sliderReleased()), this, SLOT(setMPPosition()));
-    connect(controlBar->slider_volume, SIGNAL(sliderReleased()), this, SLOT(setVolume()));
-    //connect(controlBar->comboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(changeQuality(QString)));
-    vbox->addWidget(controlBar);
 
     player = new QMediaPlayer;
     player->setVideoOutput(videoWidget);
@@ -740,7 +756,7 @@ void MainWindow::playLast()
 
 void MainWindow::playNext()
 {
-    if(tabWidget->currentIndex()==0){
+    if (tabWidget->currentIndex() == 0) {
         int row = tableWidget_songlist_rank->currentRow();
         int rc = tableWidget_songlist_rank->rowCount();
         qDebug() << row << rc;
@@ -752,7 +768,7 @@ void MainWindow::playNext()
             }
         }
     }
-    if(tabWidget->currentIndex()==2){
+    if (tabWidget->currentIndex() == 2) {
         int row = tableWidget_songlist->currentRow();
         int rc = tableWidget_songlist->rowCount();
         qDebug() << row << rc;
@@ -1019,21 +1035,24 @@ void MainWindow::genRankList()
         int rankid = JA_list[i].toObject().value("rankid").toInt();
         QString rankname = JA_list[i].toObject().value("rankname").toString();
         QString imgurl = JA_list[i].toObject().value("imgurl").toString().replace("/{size}/","/");
-        QListWidgetItem *LWI = new QListWidgetItem(QIcon(":/icon/KU.svg"), "");
-        //LWI->setToolTip(rankname);
+        QListWidgetItem *LWI = new QListWidgetItem(QIcon(":/icon/KU.svg"), "");        
         LWI->setData(RANK_ID, rankid);
+        LWI->setData(RANK_NAME, rankname);
         LWI->setData(RANK_IMGURL, imgurl);
         listWidget_rank->addItem(LWI);
         getRankImage(LWI);
     }    
 }
 
-void MainWindow::rankListItemClick(QListWidgetItem *item)
+void MainWindow::rankListItemClick(QListWidgetItem *LWI)
 {
     listWidget_discovery->setCurrentRow(-1);
-    stackedWidget->setCurrentWidget(tableWidget_songlist_rank);
+    stackedWidget->setCurrentWidget(widget_songrank);
     tableWidget_songlist_rank->setRowCount(0);
-    int rankid = item->data(RANK_ID).toInt();
+    QString rankname = LWI->data(RANK_NAME).toString();
+    label_rankname->setText(rankname);
+    label_rankimg->setPixmap(LWI->icon().pixmap(label_rankimg->size()));
+    int rankid = LWI->data(RANK_ID).toInt();
     QString surl = QString("http://m.kugou.com/rank/info/?rankid=%1&page=1&json=true").arg(rankid);
     qWarning() << surl;
     QJsonDocument JD = QJsonDocument::fromJson(getReply(surl));

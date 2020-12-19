@@ -186,8 +186,8 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 void ControlBar::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
-//    QPainter p(this);
-//    p.setPen(Qt::NoPen);
-//    p.setBrush(QColor(0,131,221));
-//    p.drawRect(rect());
+    QPainter p(this);
+    p.setPen(Qt::NoPen);
+    p.setBrush(QColor(255,255,255));
+    p.drawRect(rect());
 }

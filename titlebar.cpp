@@ -23,7 +23,7 @@ TitleBar::TitleBar(QWidget *parent) : QWidget(parent)
 
     QLabel *label_icon = new QLabel;
     label_icon->setFixedSize(40,40);
-    label_icon->setPixmap(QPixmap(":/icon/icon.svg").scaled(label_icon->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+    label_icon->setPixmap(QPixmap(":/icon/KuGou.svg").scaled(label_icon->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     hbox->addWidget(label_icon);
     hbox->addStretch();
 
@@ -168,7 +168,7 @@ void TitleBar::about()
     dialog->setFixedSize(500,350);
     QVBoxLayout *vbox = new QVBoxLayout;
     QLabel *label = new QLabel;
-    label->setPixmap(QPixmap(":/icon/icon.svg").scaled(90, 90, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+    label->setPixmap(QPixmap(":/icon/KuGou.svg").scaled(90, 90, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     label->setAlignment(Qt::AlignCenter);
     vbox->addWidget(label);
     label = new QLabel;
@@ -177,7 +177,7 @@ void TitleBar::about()
     label->setStyleSheet("font-size:20px;");
     vbox->addWidget(label);
     label = new QLabel;
-    label->setText("         一款基于 Qt5 的酷狗音乐播放器。\n作者：海天鹰\nE-mail: sonichy@163.com\n主页：https://github.com/sonichy\n界面和音乐版权：酷狗\n参考：\nhttps://github.com/ecitlm/Kugou-api\nhttps://www.cnblogs.com/xuhui24/p/6555761.html");
+    label->setText("         一款基于 Qt5 的酷狗音乐播放器。\n作者：海天鹰\nE-mail: sonichy@163.com\n主页：https://github.com/sonichy/KuGou\n界面和音乐版权：酷狗\n参考：\nhttps://github.com/ecitlm/Kugou-api\nhttps://www.cnblogs.com/xuhui24/p/6555761.html");
     label->setStyleSheet("font-size:15px;");
     label->setWordWrap(true);
     label->setAlignment(Qt::AlignTop);

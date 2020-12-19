@@ -1,12 +1,12 @@
 <?xml version="1.0" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="32" height="32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-<polyline points="3,14 3,3 13,3" stroke="RGB(110,111,113)" stroke-width="1" fill="none"/>
-<polyline points="20,3 30,3 30,14" stroke="RGB(110,111,113)" stroke-width="1" fill="none"/>
-<polyline points="30,20 30,30 20,30" stroke="RGB(110,111,113)" stroke-width="1" fill="none"/>
-<polyline points="13,30 3,30 3,20" stroke="RGB(110,111,113)" stroke-width="1" fill="none"/>
-<line x1="3" y1="3" x2="13" y2="13" stroke="RGB(110,111,113)" stroke-width="1"/>
-<line x1="20" y1="20" x2="30" y2="30" stroke="RGB(110,111,113)" stroke-width="1"/>
-<line x1="30" y1="3" x2="20" y2="13" stroke="RGB(110,111,113)" stroke-width="1"/>
-<line x1="3" y1="30" x2="13" y2="20" stroke="RGB(110,111,113)" stroke-width="1"/>
+<polyline points="3,14 3,3 13,3" stroke="rgb(110,111,113)" stroke-width="1" fill="none"/>
+<polyline points="20,3 30,3 30,14" stroke="rgb(110,111,113)" stroke-width="1" fill="none"/>
+<polyline points="30,20 30,30 20,30" stroke="rgb(110,111,113)" stroke-width="1" fill="none"/>
+<polyline points="13,30 3,30 3,20" stroke="rgb(110,111,113)" stroke-width="1" fill="none"/>
+<line x1="3" y1="3" x2="13" y2="13" stroke="rgb(110,111,113)" stroke-width="1"/>
+<line x1="20" y1="20" x2="30" y2="30" stroke="rgb(110,111,113)" stroke-width="1"/>
+<line x1="30" y1="3" x2="20" y2="13" stroke="rgb(110,111,113)" stroke-width="1"/>
+<line x1="3" y1="30" x2="13" y2="20" stroke="rgb(110,111,113)" stroke-width="1"/>
 </svg>

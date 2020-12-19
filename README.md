@@ -12,6 +12,10 @@ sudo apt install libqt5multimedia5
 ```
 sudo apt install qtmultimedia5-dev
 ```
+### DEB打包
+```
+sudo dpkg -b deb/ KuGou-linux-amd64.deb
+```
 ### V 2.0
 参照酷狗9175重做。
 
