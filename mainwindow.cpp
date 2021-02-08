@@ -31,19 +31,23 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     settings(QApplication::organizationName(), QApplication::applicationName())
 {
-    setWindowIcon(QIcon(":/icon/icon.svg"));
+    setWindowIcon(QIcon(":/icon/KuGou.svg"));
     setWindowFlags(Qt::FramelessWindowHint);
     resize(1000,700);
 
     move((QApplication::desktop()->width() - width()) / 2, (QApplication::desktop()->height() - height()) / 2);
-    setStyleSheet("QPushButton:hover { background:rgba(0,131,221,50); }"
+    setStyleSheet(//"QListWidget { background:white; }"
+                  //"QTableWidget { background:white; }"
+                  //"QHeaderView::section { background-color:white; }"
+                  //"QTableCornerButton::section { background:white; }"
+                  "QPushButton:hover { background:rgba(0,131,221,50); }"
                   "QTabWidget { background:rgb(82,146,254); }"
                   "QTabWidget::pane { border:0px; }"    //内部边框
-                  //"QTabWidget::tab-bar { background-color:rgb(82,146,254); }"
-                  "QTabBar { background:rgb(82,146,254); }"
+                  "QTabWidget::tab-bar { background:rgb(82,146,254); }"
+                  //"QTabBar { background:rgb(82,146,254); }"
                   "QTabBar:tab { width:155px; height:30px; }"
                   "QTabBar::tab:selected { color:rgb(82,146,254); background:rgb(82,146,254); border-image: url(:/icon/tab.svg); }"
-                  "QTabBar::tab:!selected { background:rgb(82,146,254); border-image: url(:/icon/tab1.svg); }"
+                  "QTabBar::tab:!selected { color:black; background:rgb(82,146,254); border-image: url(:/icon/tab1.svg); }"
                   );
     connect(new QShortcut(QKeySequence(Qt::Key_Escape),this), SIGNAL(activated()), this, SLOT(exitFullscreen()));
     connect(new QShortcut(QKeySequence(Qt::Key_Space),this), SIGNAL(activated()), this, SLOT(playPause()));
@@ -303,7 +307,7 @@ MainWindow::MainWindow(QWidget *parent)
     tabWidget->setCurrentWidget(widget_discovery);
     genRankList();
 
-    tabWidget->dumpObjectTree(); //?
+    //tabWidget->dumpObjectTree(); //显示控件树
 
     // Cookie的kg_mid算法：https://blog.csdn.net/ychgyyn/article/details/90110296
     QString key = genKey(4);
