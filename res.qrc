@@ -39,5 +39,6 @@
         <file>icon/radio1.svg</file>
         <file>icon/heart1.svg</file>
         <file>icon/KuGou.svg</file>
+        <file>icon/album.svg</file>
     </qresource>
 </RCC>

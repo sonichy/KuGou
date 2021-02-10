@@ -34,7 +34,7 @@ ControlBar::ControlBar(QWidget *parent) : QWidget(parent)
 
     pushButton_albumPic = new QPushButton;
     pushButton_albumPic->setFixedSize(50,50);
-    pushButton_albumPic->setIcon(QIcon(":/icon/songlist1.svg"));
+    pushButton_albumPic->setIcon(QIcon(":/icon/album.svg"));
     pushButton_albumPic->setIconSize(QSize(50,50));
     pushButton_albumPic->setFocusPolicy(Qt::NoFocus);
     pushButton_albumPic->setFlat(true);

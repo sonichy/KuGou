@@ -1,0 +1,9 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="128" height="128" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="128" height="128" rx="10" ry="10" fill="rgb(237,242,246)" stroke-width="0" stroke="rgb(0,0,0)"/>
+<circle cx="64" cy="64" r="50" stroke="rgb(218,222,226)" stroke-width="5" fill="none"/>
+<text x="35" y="90" font-size="70" font-family="Bitstream Vera Sans">
+	<tspan font-weight="bold" font-style="italic" fill="rgb(218,222,226)">K</tspan>
+</text>
+</svg>
