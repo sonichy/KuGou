@@ -374,6 +374,7 @@ void MainWindow::playSong(int row, int column)
     Q_UNUSED(column);
     controlBar->pushButton_albumPic->setIcon(QIcon(":/icon/album.svg"));
     controlBar->pushButton_love->toggled(false);
+    controlBar->pushButton_download->setStyleSheet("");
     QString hash = tableWidget_songlist->item(row,4)->text();
     QString album_id = tableWidget_songlist->item(row,6)->text();
     //QString surl = "http://www.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
@@ -403,6 +404,7 @@ void MainWindow::playSongRank(int row, int column)
     Q_UNUSED(column);
     controlBar->pushButton_albumPic->setIcon(QIcon(":/icon/album.svg"));
     controlBar->pushButton_love->toggled(false);
+    controlBar->pushButton_download->setStyleSheet("");
     QString hash = tableWidget_songlist_rank->item(row,2)->text();
     QString album_id = tableWidget_songlist_rank->item(row,4)->text();
     //QString surl = "http://www.kugou.com/yy/index.php?r=play/getdata&hash=" + hash;
@@ -791,6 +793,8 @@ void MainWindow::playNext()
 void MainWindow::pushButtonMVClicked()
 {
     controlBar->pushButton_albumPic->setIcon(QIcon(":/icon/album.svg"));
+    controlBar->pushButton_love->toggled(false);
+    controlBar->pushButton_download->setStyleSheet("");
     textBrowser->setText("");
     lyrics.clear();
     QPushButton *pushButton = qobject_cast<QPushButton*>(sender());
@@ -831,7 +835,9 @@ void MainWindow::pushButtonMVClicked()
 }
 
 void MainWindow::rankPushButtonMVClicked()
-{
+{    
+    controlBar->pushButton_love->toggled(false);
+    controlBar->pushButton_download->setStyleSheet("");
     textBrowser->setText("");
     lyrics.clear();
     QPushButton *pushButton = qobject_cast<QPushButton*>(sender());
